@@ -19,8 +19,18 @@ let rec interp_block (env : env) (blk : block) : value =
   let rec eval_stat = function 
     (* must complete this part *)
     | Nop                     -> ()
-    | Seq (s,s')              -> assert false
-    | Assign (v,e)            -> assert false
+    | Seq (s,s')              -> eval_stat s; 
+                                 eval_stat s'
+    | Assign (var,e)            -> let v = interp_exp env' e in 
+                                   ( match var with
+                                      | Name name         -> Value.set_ident env' name v 
+                                      | IndexTable (t, i) -> let t_val = interp_exp env' t in
+                                                             let i_val = interp_exp env' i in
+                                                             let table = Value.as_table t_val in
+                                                             let i_key = Value.as_table_key i_val in
+                                                             Hashtbl.replace table i_key v
+                                      | _ -> failwith "(interp_block)::(eval_stat)::(Assign)-> var not matched"
+                                   )
     | FunctionCall fc         -> assert false 
     | WhileDoEnd (cond, body) -> assert false
     | If (cond, e, e')        -> assert false
@@ -32,12 +42,22 @@ let rec interp_block (env : env) (blk : block) : value =
 (* Interprète un statement *)
 and interp_stat (env : env) (stat : stat) : unit =
   match stat with
-    | Nop                     -> ()
-    | Seq (s,s')              -> assert false
-    | Assign (v,e)            -> assert false
-    | FunctionCall fc         -> assert false
-    | WhileDoEnd (cond, body) -> assert false
-    | If (cond, e, e')        -> assert false
+    | Nop                      -> ()
+    | Seq (s, s')              -> interp_stat env s; 
+                                  interp_stat env s'
+    | Assign (var, e)          -> let v = interp_exp env e in
+                                  ( match var with 
+                                      | Name name         -> Value.set_ident env name v
+                                      | IndexTable (t, i) -> let t_val = interp_exp env t in
+                                                             let i_val = interp_exp env i in
+                                                             let table = Value.as_table i_val in
+                                                             let i_key = Value.as_table_key i_val in
+                                                             Hashtbl.replace table i_key v
+                                      | _ -> failwith "(interp_stat)::(Assign)-> var not matched"
+                                  )
+    | FunctionCall fc          -> assert false
+    | WhileDoEnd (cond, body)  -> assert false
+    | If (cond, e, e')         -> assert false
     | _ -> failwith "(interp_stat)-> stat not matched"
 
 (* Interprète un appel de fonction *)
