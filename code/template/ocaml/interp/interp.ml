@@ -23,13 +23,13 @@ let rec interp_block (env : env) (blk : block) : value =
                                  eval_stat s'
     | Assign (var,e)            -> let v = interp_exp env' e in 
                                    ( match var with
-                                      | Name name         -> Value.set_ident env' name v 
-                                      | IndexTable (t, i) -> let t_val = interp_exp env' t in
-                                                             let i_val = interp_exp env' i in
-                                                             let table = Value.as_table t_val in
-                                                             let i_key = Value.as_table_key i_val in
-                                                             Hashtbl.replace table i_key v
-                                      | _ -> failwith "(interp_block)::(eval_stat)::(Assign)-> var not matched"
+                                       | Name name         -> Value.set_ident env' name v 
+                                       | IndexTable (t, i) -> let t_val = interp_exp env' t in
+                                                              let i_val = interp_exp env' i in
+                                                              let table = Value.as_table t_val in
+                                                              let i_key = Value.as_table_key i_val in
+                                                              Hashtbl.replace table i_key v
+                                       | _ -> failwith "(interp_block)::(eval_stat)::(Assign)-> var not matched"
                                    )
     | FunctionCall fc         -> assert false 
     | WhileDoEnd (cond, body) -> assert false
@@ -69,13 +69,16 @@ and interp_funcall (env : env) (fc : functioncall) : value =
 (* Interprète une expression *)
 and interp_exp (env : env) (e : exp) : value =
   match e with 
-    | Nil                -> assert false
-    | False              -> assert false
-    | True               -> assert false
-    | Integer n          -> assert false
-    | Float n            -> assert false
-    | LiteralString str  -> assert false
-    | Var v              -> assert false
+    | Nil                -> Value.Nil
+    | False              -> Value.Bool false
+    | True               -> Value.Bool true
+    | Integer n          -> Value.Int n
+    | Float f            -> Value.Float f
+    | LiteralString str  -> Value.String str
+    | Var v              -> ( match v with
+                                | Name name -> Value.lookup_ident env name
+                                | _ -> failwith "(interp_exp)::(Var)-> var isn't 'Name'"
+                            )
     | FunctionCallE fc   -> assert false
     | FunctionDef fb     -> assert false
     | BinOp (bop, e, e') -> assert false
