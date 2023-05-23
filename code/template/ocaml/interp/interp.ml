@@ -81,8 +81,37 @@ and interp_exp (env : env) (e : exp) : value =
                             )
     | FunctionCallE fc   -> assert false
     | FunctionDef fb     -> assert false
-    | BinOp (bop, e, e') -> assert false
-    | UnOp (uop, e)      -> assert false
+    | BinOp (bop, e, e') -> let v = interp_exp env e in
+                            let v' = interp_exp env e' in
+                            ( match bop with 
+                              | Addition       -> Value.add v v'
+                              | Subtraction    -> Value.sub v v'
+                              | Multiplication -> Value.mul v v'
+                              | Equality       -> Value.Bool (Value.equal v v')
+                              | Inequality     -> Value.Bool (not (Value.equal v v'))
+                              | Less           -> Value.Bool (Value.lt v v')
+                              | LessEq         -> Value.Bool (Value.le v v')
+                              | Greater        -> Value.Bool (not (Value.le v v'))
+                              | GreaterEq      -> Value.Bool (not (Value.lt v v'))
+                              | LogicalAnd     -> ( match (v,v') with 
+                                                      | Value.Bool false, _              -> v
+                                                      | _, Value.Bool false              -> v'
+                                                      | Value.Bool true, Value.Bool true -> v
+                                                      | _,_ -> failwith "(interp_exp)::(BinOp)::(LogicalAnd)-> {v,v'} not matched"
+                                                  )
+                              | LogicalOr      -> ( match (v,v') with 
+                                                      | Value.Bool false, Value.Bool false -> v
+                                                      | Value.Bool _, Value.Bool _         -> Value.Bool true
+                                                      | _,_ -> failwith "(interp_exp)::(BinOp)::(LogicalOr)-> {v,v'} not matched"
+                                                  )
+                              | _ -> failwith "(interp_exp)::(BinOp)-> bop not matched"
+                            )
+    | UnOp (uop, e)      -> let v = interp_exp env e in
+                            ( match uop with 
+                                | UnaryMinus -> (* Value.mul (Value.Int Int64.minus_one) v *) Value.neg v  
+                                | Not        -> Value.Bool (not (Value.as_bool v))
+                                | _ -> failwith "(interp_exp)::(UnOp)-> uop not matched"
+                            )
     | Table elts         -> assert false
     | _ -> failwith "(interp_exp)-> e not matched"
 
