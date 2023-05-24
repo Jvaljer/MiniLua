@@ -17,7 +17,6 @@ let rec interp_block (env : env) (blk : block) : value =
   let loc_scp = create_scope blk.locals (List.map (fun _ -> Value.Nil) blk.locals) in
   let env' = { env with locals = loc_scp::env.locals } in
   let rec eval_stat = function 
-    (* must complete this part *)
     | Nop                     -> ()
     | Seq (s,s')              -> eval_stat s; 
                                  eval_stat s'
@@ -52,8 +51,7 @@ and interp_stat (env : env) (stat : stat) : unit =
     | Assign (var, e)      -> let v = interp_exp env e in
                               ( match var with 
                                   | Name name         -> Value.set_ident env name v
-                                  | IndexTable (t, i) -> let t_val = interp_exp env t in
-                                                         let i_val = interp_exp env i in
+                                  | IndexTable (_, i) -> let i_val = interp_exp env i in
                                                          let table = Value.as_table i_val in
                                                          let i_key = Value.as_table_key i_val in
                                                          Hashtbl.replace table i_key v
@@ -102,7 +100,10 @@ and interp_exp (env : env) (e : exp) : value =
                                 | _ -> failwith "(interp_exp)::(Var)-> var isn't 'Name'"
                             )
     | FunctionCallE fc   -> interp_funcall env fc
-    | FunctionDef fb     -> assert false
+    | FunctionDef fb     -> ( match fb with
+                                | ([],_) -> Value.Nil
+                                | (_, blk) -> interp_block env blk
+                            )
     | BinOp (bop, e, e') -> let v = interp_exp env e in
                             let v' = interp_exp env e' in
                             ( match bop with 
