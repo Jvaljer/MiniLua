@@ -21,20 +21,24 @@ let rec interp_block (env : env) (blk : block) : value =
     | Nop                     -> ()
     | Seq (s,s')              -> eval_stat s; 
                                  eval_stat s'
-    | Assign (var,e)            -> let v = interp_exp env' e in 
-                                   ( match var with
-                                       | Name name         -> Value.set_ident env' name v 
-                                       | IndexTable (t, i) -> let t_val = interp_exp env' t in
-                                                              let i_val = interp_exp env' i in
-                                                              let table = Value.as_table t_val in
-                                                              let i_key = Value.as_table_key i_val in
-                                                              Hashtbl.replace table i_key v
-                                       | _ -> failwith "(interp_block)::(eval_stat)::(Assign)-> var not matched"
-                                   )
-    | FunctionCall fc         -> assert false 
-    | WhileDoEnd (cond, body) -> assert false
-    | If (cond, e, e')        -> assert false
-    | _ -> failwith "(interp_block)::(eval_stat)-> blk.body not matched" 
+    | Assign (var,e)          -> let v = interp_exp env' e in 
+                               ( match var with
+                                   | Name name         -> Value.set_ident env' name v 
+                                   | IndexTable (t, i) -> let t_val = interp_exp env' t in
+                                                          let i_val = interp_exp env' i in
+                                                          let table = Value.as_table t_val in
+                                                          let i_key = Value.as_table_key i_val in
+                                                          Hashtbl.replace table i_key v
+                               )
+    | FunctionCall fc         -> ignore (interp_funcall env' fc)
+    | WhileDoEnd (e, body)    -> let cond = Value.as_bool (interp_exp env' e) in
+                                    while cond do 
+                                      interp_stat env' body 
+                                    done
+    | If (cond, b, b')        -> if Value.as_bool (interp_exp env cond) then
+                                   interp_stat env b 
+                                 else
+                                   interp_stat env b'
   in
   eval_stat blk.body;
   interp_exp env' blk.ret
@@ -42,29 +46,47 @@ let rec interp_block (env : env) (blk : block) : value =
 (* Interprète un statement *)
 and interp_stat (env : env) (stat : stat) : unit =
   match stat with
-    | Nop                      -> ()
-    | Seq (s, s')              -> interp_stat env s; 
-                                  interp_stat env s'
-    | Assign (var, e)          -> let v = interp_exp env e in
-                                  ( match var with 
-                                      | Name name         -> Value.set_ident env name v
-                                      | IndexTable (t, i) -> let t_val = interp_exp env t in
-                                                             let i_val = interp_exp env i in
-                                                             let table = Value.as_table i_val in
-                                                             let i_key = Value.as_table_key i_val in
-                                                             Hashtbl.replace table i_key v
-                                      | _ -> failwith "(interp_stat)::(Assign)-> var not matched"
-                                  )
-    | FunctionCall fc          -> assert false
-    | WhileDoEnd (cond, body)  -> assert false
-    | If (cond, e, e')         -> assert false
-    | _ -> failwith "(interp_stat)-> stat not matched"
+    | Nop                  -> ()
+    | Seq (s, s')          -> interp_stat env s; 
+                              interp_stat env s'
+    | Assign (var, e)      -> let v = interp_exp env e in
+                              ( match var with 
+                                  | Name name         -> Value.set_ident env name v
+                                  | IndexTable (t, i) -> let t_val = interp_exp env t in
+                                                         let i_val = interp_exp env i in
+                                                         let table = Value.as_table i_val in
+                                                         let i_key = Value.as_table_key i_val in
+                                                         Hashtbl.replace table i_key v
+                              )
+    | FunctionCall fc      -> ignore (interp_funcall env fc)
+    | WhileDoEnd (e, body) -> let cond = Value.as_bool (interp_exp env e) in
+                              while cond do
+                                interp_stat env body
+                              done
+    | If (cond, b, b')        -> if Value.as_bool (interp_exp env cond) then
+                                   interp_stat env b 
+                                 else
+                                   interp_stat env b'
 
 (* Interprète un appel de fonction *)
 and interp_funcall (env : env) (fc : functioncall) : value =
   match fc with 
-    | (fun_e, args) -> assert false
-    | _ -> failwith "(interp_funcall)-> fc not matched"
+    | (f_exp, args) ->
+      let f_val = interp_exp env f_exp in
+      let a_vals = List.map (interp_exp env) args in
+      ( match f_val with 
+          | Value.Function f -> ( match f with 
+                                    | Value.Print -> 
+                                      List.iter (fun arg_val -> print_string (Value.to_string arg_val ^ "\t")) a_vals;
+                                      print_newline ();
+                                      Value.Nil
+                                    | Value.Closure (names, clos_env, body) -> 
+                                      let scope' = create_scope names a_vals in
+                                      let env' = { clos_env with locals = scope'::clos_env.locals } in
+                                      interp_block env' body
+                                )
+          | _ -> failwith "(interp_funcall)-> fc isn't a function value"
+      )
 
 (* Interprète une expression *)
 and interp_exp (env : env) (e : exp) : value =
@@ -79,7 +101,7 @@ and interp_exp (env : env) (e : exp) : value =
                                 | Name name -> Value.lookup_ident env name
                                 | _ -> failwith "(interp_exp)::(Var)-> var isn't 'Name'"
                             )
-    | FunctionCallE fc   -> assert false
+    | FunctionCallE fc   -> interp_funcall env fc
     | FunctionDef fb     -> assert false
     | BinOp (bop, e, e') -> let v = interp_exp env e in
                             let v' = interp_exp env e' in
@@ -104,16 +126,13 @@ and interp_exp (env : env) (e : exp) : value =
                                                       | Value.Bool _, Value.Bool _         -> Value.Bool true
                                                       | _,_ -> failwith "(interp_exp)::(BinOp)::(LogicalOr)-> {v,v'} not matched"
                                                   )
-                              | _ -> failwith "(interp_exp)::(BinOp)-> bop not matched"
                             )
     | UnOp (uop, e)      -> let v = interp_exp env e in
                             ( match uop with 
                                 | UnaryMinus -> (* Value.mul (Value.Int Int64.minus_one) v *) Value.neg v  
                                 | Not        -> Value.Bool (not (Value.as_bool v))
-                                | _ -> failwith "(interp_exp)::(UnOp)-> uop not matched"
                             )
     | Table elts         -> assert false
-    | _ -> failwith "(interp_exp)-> e not matched"
 
 let run ast =
   let globals = Hashtbl.create 47 in
