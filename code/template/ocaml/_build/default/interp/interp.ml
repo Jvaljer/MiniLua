@@ -5,7 +5,7 @@ type env = Value.env
 (* Fonction auxiliaire pour créer une table d'environnement à partir de noms et
    valeurs associées. *)
 let create_scope (names: string list) (values: value list) : (name, value) Hashtbl.t =
-  Printf.printf "create_scope";
+  (*Printf.printf "create_scope";*)
   let scope = Hashtbl.create (List.length names) in
   List.iter2 (fun name v -> Hashtbl.add scope name v) names values;
   scope
@@ -15,7 +15,7 @@ let create_scope (names: string list) (values: value list) : (name, value) Hasht
 
 (* Interprète un bloc de code *)
 let rec interp_block (env : env) (blk : block) : value =
-  Printf.printf "interp_block";
+  (*Printf.printf "interp_block";*)
   (match env.locals with 
     | [] -> ()
     | loc::_ -> List.iter (fun n -> Hashtbl.replace loc n Value.Nil) blk.locals);
@@ -24,7 +24,7 @@ let rec interp_block (env : env) (blk : block) : value =
 
 (* Interprète un statement *)
 and interp_stat (env : env) (stat : stat) : unit =
-  Printf.printf "interp_stat";
+  (*Printf.printf "interp_stat";*)
   match stat with
     | Nop                  -> ()
     | Seq (s, s')          -> interp_stat env s; 
@@ -49,7 +49,7 @@ and interp_stat (env : env) (stat : stat) : unit =
 
 (* Interprète un appel de fonction *)
 and interp_funcall (env : env) (fc : functioncall) : value =
-  Printf.printf "interp_funcall";
+  (*Printf.printf "interp_funcall";*)
   match fc with 
     | (f_exp, args) ->
       let f_val = interp_exp env f_exp in
@@ -70,7 +70,7 @@ and interp_funcall (env : env) (fc : functioncall) : value =
 
 (* Interprète une expression *)
 and interp_exp (env : env) (e : exp) : value =
-  Printf.printf "interp_exp";                                 
+  (*Printf.printf "interp_exp";*)                              
   match e with 
     | Nil                     -> Value.Nil
     | False                   -> Value.Bool false

@@ -10,7 +10,7 @@ pub mod value;
 
 impl Block {
     // Interprétation d'un bloc
-    fn interp<'ast, 'genv>(&'ast self, env: &mut Env<'ast, 'genv>) -> Value<'ast> {
+    fn interp<'ast, 'genv>(&'ast self, env: &'ast mut Env<'ast, 'genv>) -> Value<'ast> {
         let vec = vec![Value::Nil; self.locals.len()];
         let mut env_ = Env { locals: env.locals.extend(&self.locals, vec.into_iter()), globals: &mut env.globals, };
         self.body.interp(&mut env_);
@@ -41,43 +41,69 @@ impl FunctionCall {
 
 impl Exp_ {
     // Interprétation d'une expression
-    fn interp<'ast, 'genv>(&'ast self, env: &mut Env<'ast, 'genv>) -> Value<'ast> {
+    fn interp<'ast, 'genv>(&'ast self, env: &'ast mut Env<'ast, 'genv>) -> Value<'ast> {
         match self {
             Self::Nil => Value::Nil,
             Self::False => Value::Bool(false),
             Self::True => Value::Bool(true),
-            Self::Number(n) => Value::Number(n),
-            Self::LiteralString(str) => Value::String(str),
+            Self::Number(n) => Value::Number(*n),
+            Self::LiteralString(str) => Value::String(str.clone()),
             Self::Var(var) => { match var {
-                                    Var::Name(name) => env.lookup(name),
+                                    Var::Name(name) => env.lookup(name), //lifetime 'ast required + returning lifetime 'genv
                                     Var::IndexTable(tab, k) => { let table = tab.interp(env).as_table();
                                                                  let key = k.interp(env).as_table_key();
-                                                                 let val = table.borrow().get(&key);
-                                                                 match val {
-                                                                    Some(x) => x,
+                                                                 let v = match table.borrow().get(&key) {
+                                                                    Some(x) => x.clone(),
                                                                     None => Value::Nil,
-                                                                 }
+                                                                 }; v
                                                                }
                                 }
                               },
             Self::ExpFunctionCall(fc) => unimplemented!(),
             Self::FunctionDef(fb) => unimplemented!(),
             Self::BinOp(bop, e, e_) => match bop {
-                                           Binop::Addition => { unimplemented!() }
-                                           Binop::Subtraction => { unimplemented!() }
-                                           Binop::Multiplication => { unimplemented!() }
-                                           Binop::Equality => { unimplemented!() }
-                                           Binop::Inequality => { unimplemented!() }
-                                           Binop::Less => { unimplemented!() }
-                                           Binop::LessEq => { unimplemented!() }
-                                           Binop::Greater => { unimplemented!() }
-                                           Binop::GreaterEq => { unimplemented!() }
-                                           Binop::LogicalAnd => { unimplemented!() }
-                                           Binop::LogicalOr => { unimplemented!() }
+                                           BinOp::Addition => { let mut v = e.interp(env).as_number();
+                                                                let mut v_ = e_.interp(env).as_number();
+                                                                Value::Number(v + v_)
+                                                              }
+                                           BinOp::Subtraction => { let mut v = e.interp(env).as_number();
+                                                                   let mut v_ = e_.interp(env).as_number();
+                                                                   Value::Number(v - v_)
+                                                                 }
+                                           BinOp::Multiplication => { let mut v = e.interp(env).as_number();
+                                                                      let mut v_ = e_.interp(env).as_number();
+                                                                      Value::Number(v * v_)
+                                                                    }
+                                           BinOp::Equality => { let mut b = e.interp(env).as_bool();
+                                                                let mut b_ = e_.interp(env).as_bool();
+                                                                Value::Bool(b == b_)
+                                                              }
+                                           BinOp::Inequality => { let mut b = e.interp(env).as_bool();
+                                                                  let mut b_ = e_.interp(env).as_bool();
+                                                                  Value::Bool(b != b_)
+                                                                }
+                                           BinOp::Less => { let mut b = e.interp(env).as_bool();
+                                                            let mut b_ = e_.interp(env).as_bool();
+                                                            Value::Bool(b.lt(b_))
+                                                          }
+                                           BinOp::LessEq => { let mut b = e.interp(env).as_bool();
+                                                              let mut b_ = e_.interp(env).as_bool();
+                                                              Value::Bool(b.le(b_))
+                                                            }
+                                           BinOp::Greater => { let mut b = e.interp(env).as_bool();
+                                                               let mut b_ = e_.interp(env).as_bool();
+                                                               Value::Bool(!b.le(b_))
+                                                             }
+                                           BinOp::GreaterEq => { let mut b = e.interp(env).as_bool();
+                                                                 let mut b_ = e_.interp(env).as_bool();
+                                                                 Value::Bool(!b.lt(b_))
+                                                               }
+                                           BinOp::LogicalAnd => { unimplemented!() }
+                                           BinOp::LogicalOr => { unimplemented!() }
                                        },
-            Self::Unop(uop, e) => match uop {
-                                      Unop::UnaryMinus => { unimplemented!() }
-                                      Unop::Not => { unimplemented!() }
+            Self::UnOp(uop, e) => match uop {
+                                      UnOp::UnaryMinus => { unimplemented!() }
+                                      UnOp::Not => { unimplemented!() }
                                   },
             Self::Table(tab) => unimplemented!(),
         }
