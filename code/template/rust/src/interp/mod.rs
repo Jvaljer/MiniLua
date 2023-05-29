@@ -64,39 +64,40 @@ impl Exp_ {
             Self::BinOp(bop, e, e_) => match bop {
                                            BinOp::Addition => { let mut v = e.interp(env).as_number();
                                                                 let mut v_ = e_.interp(env).as_number();
-                                                                Value::Number(v + v_)
+                                                                Value::Add(v,v_)
                                                               }
                                            BinOp::Subtraction => { let mut v = e.interp(env).as_number();
                                                                    let mut v_ = e_.interp(env).as_number();
-                                                                   Value::Number(v - v_)
+                                                                   Value::Sub(v,v_)
                                                                  }
                                            BinOp::Multiplication => { let mut v = e.interp(env).as_number();
                                                                       let mut v_ = e_.interp(env).as_number();
-                                                                      Value::Number(v * v_)
+                                                                      Value::Mul(v,v_)
                                                                     }
                                            BinOp::Equality => { let mut b = e.interp(env).as_bool();
                                                                 let mut b_ = e_.interp(env).as_bool();
-                                                                Value::Bool(b == b_)
+                                                                Value::PartialEq(b,b_)
                                                               }
                                            BinOp::Inequality => { let mut b = e.interp(env).as_bool();
                                                                   let mut b_ = e_.interp(env).as_bool();
-                                                                  Value::Bool(b != b_)
+                                                                  !Value::PartialEq(b,b_) //must check...
                                                                 }
+                                          //shall test all these logical stuff
                                            BinOp::Less => { let mut b = e.interp(env).as_bool();
                                                             let mut b_ = e_.interp(env).as_bool();
-                                                            Value::Bool(b.lt(b_))
+                                                            Value::PartialOrd(b,b_)
                                                           }
                                            BinOp::LessEq => { let mut b = e.interp(env).as_bool();
                                                               let mut b_ = e_.interp(env).as_bool();
-                                                              Value::Bool(b.le(b_))
+                                                              Value::PartialOrd(b,b_) || Value::PartialEq(b,b_)
                                                             }
                                            BinOp::Greater => { let mut b = e.interp(env).as_bool();
                                                                let mut b_ = e_.interp(env).as_bool();
-                                                               Value::Bool(!b.le(b_))
+                                                               Value::PartialOrd(b,b_)
                                                              }
                                            BinOp::GreaterEq => { let mut b = e.interp(env).as_bool();
                                                                  let mut b_ = e_.interp(env).as_bool();
-                                                                 Value::Bool(!b.lt(b_))
+                                                                 Value::PartialOrd(b,b_) || Value::PartialEq(b,b_)
                                                                }
                                            BinOp::LogicalAnd => { unimplemented!() }
                                            BinOp::LogicalOr => { unimplemented!() }
