@@ -52,7 +52,12 @@ impl<'ast> LEnv<'ast> {
     // par défaut fait par le compilateur Rust ne permet pas d'implémenter
     // correctement l'interpréteur.
     fn lookup(&self, name: &Name) -> Option<&RefCell<Value>> {
-        unimplemented!()
+        match self {
+            LEnv::Nil => None, 
+            LEnv::Cons(scope, rest) => {
+                
+            }
+        }
     }
 
     // Crée un nouvel environnement local, en ajoutant un ensemble de paires
