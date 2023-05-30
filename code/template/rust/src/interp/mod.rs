@@ -47,10 +47,13 @@ impl Exp_ {
             Self::False => Value::Bool(false),
             Self::True => Value::Bool(true),
             Self::Number(n) => Value::Number(*n),
-            Self::LiteralString(str) => unimplemented!(),
+            Self::LiteralString(str) => Value::String(str.clone()),
             Self::Var(var) => unimplemented!(),
-            Self::ExpFunctionCall(fc) => unimplemented!(),
-            Self::FunctionDef(fb) => unimplemented!(),
+            Self::ExpFunctionCall(fc) => fc.interp(env),
+            Self::FunctionDef(fb) => {
+                let f = Function::new(env, &fb.params, &fb.body);
+                Value::Function(f) 
+            },
             Self::BinOp(bop, e, e_) => {
                 let v = e.interp(env);
                 let v_ = e_.interp(env);
@@ -97,10 +100,28 @@ impl Exp_ {
                 }
             },
             Self::UnOp(uop, e) => match uop {
-                                      UnOp::UnaryMinus => { unimplemented!() }
-                                      UnOp::Not => { unimplemented!() }
+                                      UnOp::UnaryMinus => {
+                                        match e.interp(env) {
+                                            Value::Number(n) => n.neg(),
+                                            _ => panic!("UnaryMinus excpects a numeric value"),
+                                        }
+                                      }
+                                      UnOp::Not => {
+                                        match e.interp(env) {
+                                            Value::Bool(b) => Value::Bool(!b),
+                                            _ => panic!("Not excpects a numeric value"),
+                                        }
+                                      }
                                   },
-            Self::Table(tab) => unimplemented!(),
+            Self::Table(tab) => {
+                let mut table = HashMap::new();
+                for(k, v) in tab {
+                    let key = k.interp(env);
+                    let val = v.interp(env);
+                    table.insert(key, val);
+                }
+                Value::Table(table)
+            }
         }
     }
 }
