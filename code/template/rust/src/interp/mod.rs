@@ -11,7 +11,10 @@ pub mod value;
 impl Block {
     // Interprétation d'un bloc
     fn interp<'ast, 'genv>(&'ast self, env: &'ast mut Env<'ast, 'genv>) -> Value<'ast> {
-        unimplemented!(),
+        for stat in &self.statements {
+            stat.interp(env);
+        }
+        self.ret.interp(env)
     }
 }
 
@@ -48,20 +51,51 @@ impl Exp_ {
             Self::Var(var) => unimplemented!(),
             Self::ExpFunctionCall(fc) => unimplemented!(),
             Self::FunctionDef(fb) => unimplemented!(),
-            Self::BinOp(bop, e, e_) => match bop {
-                                           BinOp::Addition => unimplemented!(),
-                                           BinOp::Subtraction => unimplemented!(),
-                                           BinOp::Multiplication => unimplemented!(),
-                                           BinOp::Equality => unimplemented!(),
-                                           BinOp::Inequality => unimplemented!(),
-                                          //shall test all these logical stuff
-                                           BinOp::Less => unimplemented!(),
-                                           BinOp::LessEq => unimplemented!(),
-                                           BinOp::Greater => unimplemented!(),
-                                           BinOp::GreaterEq => unimplemented!(),
-                                           BinOp::LogicalAnd => { unimplemented!() }
-                                           BinOp::LogicalOr => { unimplemented!() }
-                                       },
+            Self::BinOp(bop, e, e_) => {
+                let v = e.interp(env);
+                let v_ = e_.interp(env);
+                match bop {
+                    BinOp::Addition => match(v,v_){
+                        (Value::Number(n), Value::Number(n_)) => Value::Add(n,n_),
+                        _ => panic!("cannot interpret '{} + {}' because not both numeric values", v,v_),
+                    },
+                    BinOp::Subtraction => match (v,v_){
+                        (Value::Number(n), Value::Number(n_)) => Value::Sub(n,n_),
+                        _ => panic!("cannot interpret '{} - {}' because not both numeric values", v,v_),
+                    },
+                    BinOp::Multiplication => match (v,v_){
+                        (Value::Number(n), Value::Number(n_)) => Value::Mul(n,n_),
+                        _ => panic!("cannot interpret '{} * {}' because not both numeric values", v,v_),
+                    },
+                    BinOp::Equality => Value::Bool(v == v_),
+                    BinOp::Inequality => Value::Bool(v != v_),
+                    //shall test all these logical stuff
+                    BinOp::Less => match (v,v_){
+                        (Value::Number(n), Value::Number(n_)) => Value::Bool(v.lt(v_)),
+                        _ => panic!("cannot interpret '{} < {}' because not both numeric values", v,v_),
+                    },
+                    BinOp::LessEq => match (v,v_){
+                        (Value::Number(n), Value::Number(n_)) => Value::Bool(v.le(v_)),
+                        _ => panic!("cannot interpret '{} <= {}' because not both numeric values", v,v_),
+                    },
+                    BinOp::Greater => match (v,v_){
+                        (Value::Number(n), Value::Number(n_)) => Value::Bool(!(v.le(v_))),
+                        _ => panic!("cannot interpret '{} > {}' because not both numeric values", v,v_),
+                    },
+                    BinOp::GreaterEq => match (v,v_){
+                        (Value::Number(n), Value::Number(n_)) => Value::Bool(!(v.lt(v_))),
+                        _ => panic!("cannot interpret '{} >= {}' because not both numeric values", v,v_),
+                    },
+                    BinOp::LogicalAnd => match (v,v_){
+                        (Value::Bool(b), Value::Bool(b_)) => Value::Bool(b && b_),
+                        _ => panic!("cannot interpret '{} && {}' because not both boolean values", v,v_),
+                    },
+                    BinOp::LogicalOr => match (v,v_){
+                        (Value::Bool(b), Value::Bool(b_)) => Value::Bool(b || b_),
+                        _ => panic!("cannot interpret '{} || {}' because not both boolean values", v,v_),
+                    },
+                }
+            },
             Self::UnOp(uop, e) => match uop {
                                       UnOp::UnaryMinus => { unimplemented!() }
                                       UnOp::Not => { unimplemented!() }
