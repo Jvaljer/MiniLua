@@ -23,11 +23,34 @@ impl Stat_ {
     fn interp<'ast, 'genv>(&'ast self, env: &mut Env<'ast, 'genv>) -> () {
         match self {
             Self::Nop => (),
-            Self::Seq(e,e_) => { unimplemented!() }
-            Self::StatFunctionCall(fc) => { unimplemented!() }
-            Self::Assign(val, e) => { unimplemented!() }
-            Self::WhileDoEnd(cond, e) => { unimplemented!() }
-            Self::If(cond, e, e_) => { unimplemented!() }
+            Self::Seq(e,e_) => {
+                e.interp(env);
+                e_.interp(env);
+            },
+            Self::StatFunctionCall(fc) => { fc.interp(env); },
+            Self::Assign(var, e) => {
+                let v = e.interp(env);
+                if let Some(c) = env.locals.lookup(var) {
+                    c.replace(v);
+                    return;
+                } else if let Some(c) = env.globals.0.get_mut(var) {
+                    c.replace(v);
+                    return;
+                }
+                panic!("Var {} couldn't be found...", var);
+            },
+            Self::WhileDoEnd(cond, e) => { 
+                while cond.interp(env) != Value::Bool(false) {
+                    e.interp(env);
+                }
+            },
+            Self::If(cond, e, e_) => {
+                if cond.interp(env) == Value::Bool(true) {
+                    e.interp(env);
+                } else {
+                    e_.interp(env);
+                }
+            },
         }
     }
 }
@@ -35,7 +58,17 @@ impl Stat_ {
 impl FunctionCall {
     // Interprétation d'un appel de fonction
     fn interp<'ast, 'genv>(&'ast self, env: &mut Env<'ast, 'genv>) -> Value<'ast> {
-        unimplemented!()
+        match self.name.interp(env) {
+            Value::Function(f) => f.call(env, &self.args),
+            _ => Value::Nil,
+        }
+
+        /* //maybe this would work too
+        if let Value::Function(function) = self.name.interp(env) {
+            return function.call(env, &self.args);
+        }
+        Value::Nil
+        */
     }
 }
 
@@ -48,7 +81,12 @@ impl Exp_ {
             Self::True => Value::Bool(true),
             Self::Number(n) => Value::Number(*n),
             Self::LiteralString(str) => Value::String(str.clone()),
-            Self::Var(var) => unimplemented!(),
+            Self::Var(var) => {
+                if let Some(v) = env.locals.lookup(&var) {
+                    return v.borrow().clone();
+                }
+                env.globals.lookup(&var)
+            },
             Self::ExpFunctionCall(fc) => fc.interp(env),
             Self::FunctionDef(fb) => {
                 let f = Function::new(env, &fb.params, &fb.body);
@@ -74,19 +112,19 @@ impl Exp_ {
                     BinOp::Inequality => Value::Bool(v != v_),
                     //shall test all these logical stuff
                     BinOp::Less => match (v,v_){
-                        (Value::Number(n), Value::Number(n_)) => Value::Bool(v.lt(v_)),
+                        (Value::Number(n), Value::Number(n_)) => Value::Bool(v < v_),
                         _ => panic!("cannot interpret '{} < {}' because not both numeric values", v,v_),
                     },
                     BinOp::LessEq => match (v,v_){
-                        (Value::Number(n), Value::Number(n_)) => Value::Bool(v.le(v_)),
+                        (Value::Number(n), Value::Number(n_)) => Value::Bool(v <= v_),
                         _ => panic!("cannot interpret '{} <= {}' because not both numeric values", v,v_),
                     },
                     BinOp::Greater => match (v,v_){
-                        (Value::Number(n), Value::Number(n_)) => Value::Bool(!(v.le(v_))),
+                        (Value::Number(n), Value::Number(n_)) => Value::Bool(v > v_),
                         _ => panic!("cannot interpret '{} > {}' because not both numeric values", v,v_),
                     },
                     BinOp::GreaterEq => match (v,v_){
-                        (Value::Number(n), Value::Number(n_)) => Value::Bool(!(v.lt(v_))),
+                        (Value::Number(n), Value::Number(n_)) => Value::Bool(v >= v_),
                         _ => panic!("cannot interpret '{} >= {}' because not both numeric values", v,v_),
                     },
                     BinOp::LogicalAnd => match (v,v_){
@@ -102,7 +140,7 @@ impl Exp_ {
             Self::UnOp(uop, e) => match uop {
                                       UnOp::UnaryMinus => {
                                         match e.interp(env) {
-                                            Value::Number(n) => n.neg(),
+                                            Value::Number(n) => Value::Number(-n),
                                             _ => panic!("UnaryMinus excpects a numeric value"),
                                         }
                                       }

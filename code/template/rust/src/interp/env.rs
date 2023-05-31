@@ -101,7 +101,7 @@ impl<'ast, 'genv> Env<'ast, 'genv> {
     // modifiant une entrée déjà existante, soit en en créant une nouvelle.
     pub fn set(&mut self, name: &'ast Name, v: Value) {
         if let Some(val) = self.locals.lookup(name) {
-            *value.borrow_mut() = v;
+            *val.borrow_mut() = v;
         } else {
             self.globals.0.insert(name, v);
         }
