@@ -11,9 +11,8 @@ pub mod value;
 impl Block {
     // Interprétation d'un bloc
     fn interp<'ast, 'genv>(&'ast self, env: &'ast mut Env<'ast, 'genv>) -> Value<'ast> {
-        for stat in &self.statements {
-            stat.interp(env);
-        }
+        //might need to create a new env here ?
+        self.body.interp(env);
         self.ret.interp(env)
     }
 }
@@ -59,16 +58,9 @@ impl FunctionCall {
     // Interprétation d'un appel de fonction
     fn interp<'ast, 'genv>(&'ast self, env: &mut Env<'ast, 'genv>) -> Value<'ast> {
         match self.name.interp(env) {
-            Value::Function(f) => f.call(env, &self.args),
+            Value::Function(f) => f.interp(env),
             _ => Value::Nil,
         }
-
-        /* //maybe this would work too
-        if let Value::Function(function) = self.name.interp(env) {
-            return function.call(env, &self.args);
-        }
-        Value::Nil
-        */
     }
 }
 
