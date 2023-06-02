@@ -51,8 +51,17 @@ impl<'ast> LEnv<'ast> {
     // fonction, mais aussi compléter les annotations de lifetimes : le choix
     // par défaut fait par le compilateur Rust ne permet pas d'implémenter
     // correctement l'interpréteur.
-    fn lookup(&self, name: &Name) -> Option<&RefCell<Value>> {
-        unimplemented!()
+    pub fn lookup(&self, name: &Name) -> Option<&RefCell<Value>> {
+        match self {
+            LEnv::Nil => None, 
+            LEnv::Cons(scope, rest) => {
+                if let Some(val) = scope.get(name) {
+                    Some(val)
+                } else {
+                    rest.lookup(name)
+                }
+            }
+        }
     }
 
     // Crée un nouvel environnement local, en ajoutant un ensemble de paires
@@ -68,7 +77,8 @@ impl<'ast> LEnv<'ast> {
     where
         V: Iterator<Item = Value<'ast>>,
     {
-        unimplemented!()
+        let scope: Scope<'ast> = names.iter().zip(values).map(|(name,val)| (name, RefCell::new(val))).collect();
+        Rc::new(LEnv::Cons(scope, Rc::clone(self)))
     }
 }
 
@@ -76,7 +86,13 @@ impl<'ast, 'genv> Env<'ast, 'genv> {
     // Recherche d'une valeur dans un environnement. Il faut d'abord chercher
     // dans l'environnement local, puis dans l'environnement global.
     pub fn lookup(&self, name: &Name) -> Value {
-        unimplemented!()
+        if let Some(val) = self.locals.lookup(name) {
+            val.borrow().clone()
+        } else if let Some(val) = self.globals.0.get(name) {
+            val.clone()
+        } else {
+            panic!("'{}' not found as a variable",name);
+        }
     }
 
     // Modification d'une variable dans un environnement. Si la variable est
@@ -84,6 +100,10 @@ impl<'ast, 'genv> Env<'ast, 'genv> {
     // correspondante. Sinon, il faut modifier l'environnement global, soit en
     // modifiant une entrée déjà existante, soit en en créant une nouvelle.
     pub fn set(&mut self, name: &'ast Name, v: Value) {
-        unimplemented!()
+        if let Some(val) = self.locals.lookup(name) {
+            *val.borrow_mut() = v;
+        } else {
+            self.globals.0.insert(name, v);
+        }
     }
 }

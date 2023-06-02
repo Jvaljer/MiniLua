@@ -3,7 +3,7 @@
 # Shared cache: disabled
 # Workspace root: /home/abel/JvaljerGit/MiniLua/code/template/ocaml
 # Auto-detected concurrency: 4
-$ /home/abel/.opam/prog2/bin/ocamlc.opt -config > /tmp/dune_59abe6_output
+$ /home/abel/.opam/prog2/bin/ocamlc.opt -config > /tmp/dune_3d2fd0_output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"

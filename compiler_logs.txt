@@ -1,0 +1,26 @@
+error[E0277]: the trait bound '&ast std::string::String: Borrow<ast::Var>' is not satisfied: This error suggests that you are trying to use a String as a key in a HashMap, but the key type is expected to implement the Borrow trait for ast::Var. You might need to convert the String key to ast::Var or adjust the key type in your HashMap.
+
+error[E0277]: the trait bound 'ast::Var: Hash' is not satisfied: This error indicates that the Hash trait is not implemented for the type ast::Var, which is required for using it as a key in a HashMap. Ensure that ast::Var implements the Hash trait or consider using a different type as the key.
+
+error[E0277]: the trait bound 'ast::Var: std::cmp::Eq' is not satisfied: This error suggests that the Eq trait is not implemented for the type ast::Var, which is required for using it as a key in a HashMap. Make sure ast::Var implements the Eq trait or choose an appropriate type for the key.
+
+error[E0599]: no method named 'replace' found for mutable reference '&mut Value<'ast>' in the current scope: This error indicates that you are trying to call a method named replace on a mutable reference to Value<'ast>, but such a method is not defined for that type. Check the documentation of Value<'ast> and ensure you are using the correct method or consider an alternative approach.
+
+error[E0277]: 'ast::Var' doesn't implement 'std::fmt::Display': This error suggests that the ast::Var type does not implement the std::fmt::Display trait, which is required for formatting the variable in the panic! macro. You can use {:?} instead of {} in the panic message to use the Debug formatting trait, which is implemented by default.
+
+error[E0609]: no field 'name' on type '&ast::FunctionCall': This error indicates that you are trying to access a field named name on a type &ast::FunctionCall, but the FunctionCall type does not have a field with that.
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+error[E0277]: the trait bound '&ast std::string::String: Borrow<ast::Var>' is not satisfied: If your HashMap expects keys of type ast::Var, you need to convert the String key to ast::Var before inserting it into the HashMap. You can use ast::Var::Name(key.into()) to convert the String key to ast::Var. For example: symbol_table.insert(ast::Var::Name(key.into()), ...).
+
+error[E0277]: the trait bound 'ast::Var: Hash' is not satisfied: Implement the Hash trait for the ast::Var type. You can derive the Hash trait by adding #[derive(Hash)] above the definition of the Var struct.
+
+error[E0277]: the trait bound 'ast::Var: std::cmp::Eq' is not satisfied: Implement the Eq trait for the ast::Var type. You can derive the Eq trait by adding #[derive(Eq)] above the definition of the Var struct.
+
+error[E0599]: no method named 'replace' found for mutable reference '&mut Value<'ast>' in the current scope: Check the documentation of Value<'ast> and ensure you are using the correct method. If the replace method is not available, you may need to find an alternative way to modify the value.
+
+error[E0277]: 'ast::Var' doesn't implement 'std::fmt::Display': Instead of using {} in the panic! macro, use {:?} to utilize the Debug formatting trait, which is implemented by default. For example, panic!("Variable not found: {:?}", variable);.
+
+error[E0609]: no field 'name' on type '&ast::FunctionCall': Double-check the structure of the FunctionCall type and ensure you are accessing the correct fields. If the FunctionCall type doesn't have a name field, you may need to modify the code accordingly.
