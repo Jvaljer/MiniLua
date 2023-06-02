@@ -3,16 +3,20 @@ type value = Value.t
 type coroutine = Value.coroutine
 type env = Value.env
 
-let rec interp_block (env : env) (blk : block) (k : value -> unit) : unit =
+(*adding the parameter (crtn : coroutine) in both block & stat interpret to handle coroutines*)
+let rec interp_block (env : env) (blk : block) (k : value -> unit) (crtn : coroutine): unit =
   assert false
 
-and interp_stat (env : env) (stat : stat) (k : unit -> unit) : unit =
+and create_scope (names: string list) (values: value list) : (name, value) Hashtbl.t = 
+  assert false
+  
+and interp_stat (env : env) (stat : stat) (k : unit -> unit) (crtn : coroutine): unit =
   assert false
 
-and interp_funcall (env : env) (fc : functioncall) (k: value -> unit) : unit =
+and interp_funcall (env : env) (fc : functioncall) (k: value -> unit) (crtn : coroutine): unit =
   assert false
 
-and interp_exp (env : env) (e : exp) (k: value -> unit) : unit =
+and interp_exp (env : env) (e : exp) (k: value -> unit) (crtn : coroutine): unit =
   assert false
 
 let run ast =
