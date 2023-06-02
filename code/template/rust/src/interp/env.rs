@@ -52,7 +52,15 @@ impl<'ast> LEnv<'ast> {
     // par défaut fait par le compilateur Rust ne permet pas d'implémenter
     // correctement l'interpréteur.
     fn lookup(&self, name: &Name) -> Option<&RefCell<Value>> {
-        unimplemented!()
+        match self {
+            Self::Nil => None
+            Self::Cons(scope, env) => { 
+                match scope.get(name) {
+                    Some(v) => Some(v),
+                    None => env.lookup(name),
+                }
+            }
+        }
     }
 
     // Crée un nouvel environnement local, en ajoutant un ensemble de paires
@@ -76,7 +84,15 @@ impl<'ast, 'genv> Env<'ast, 'genv> {
     // Recherche d'une valeur dans un environnement. Il faut d'abord chercher
     // dans l'environnement local, puis dans l'environnement global.
     pub fn lookup(&self, name: &Name) -> Value {
-        unimplemented!()
+        match self.locals.lookup(name){
+            Some(v) => v.borrow();
+            None => {
+                match self.globals.0.get(name){
+                    Some(v_) => v_.clone(),
+                    None => Value::Nil,
+                },
+            }
+        }
     }
 
     // Modification d'une variable dans un environnement. Si la variable est
