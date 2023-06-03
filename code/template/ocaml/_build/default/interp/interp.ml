@@ -8,6 +8,7 @@ let create_scope (names: string list) (values: value list) : (name, value) Hasht
   (*Printf.printf "create_scope";*)
   let scope = Hashtbl.create (List.length names) in
   List.iter2 (fun name v -> Hashtbl.add scope name v) names values;
+  (*Invalid_arg ("List.iter2") ???*)
   scope
 
 (* Fonctions de l'interprète, mutuellement récursives. Une fonction par
@@ -38,7 +39,7 @@ and interp_stat (env : env) (stat : stat) : unit =
                                                          Hashtbl.replace table i_key v
                               )
     | FunctionCall fc      -> ignore (interp_funcall env fc)
-    | WhileDoEnd (e, body) -> if Value.as_bool (interp_exp env e) then 
+    | WhileDoEnd (e, body) -> if Value.as_bool (interp_exp env e) then
                                 interp_stat env body;
                                 interp_stat env stat
 
@@ -65,6 +66,7 @@ and interp_funcall (env : env) (fc : functioncall) : value =
                                       let env' = { clos_env with locals = scope'::clos_env.locals } in
                                       interp_block env' body
                                 )
+          (*called for 21*)
           | _ -> failwith "(interp_funcall)-> fc isn't a function value"
       )
 
@@ -80,6 +82,7 @@ and interp_exp (env : env) (e : exp) : value =
     | LiteralString str       -> Value.String str
     | Var v                   -> ( match v with
                                      | Name name -> Value.lookup_ident env name
+                                     (*called for18,19,24*)
                                      | _ -> failwith "(interp_exp)::(Var)-> var isn't 'Name'"
                                  )
     | FunctionCallE fc        -> interp_funcall env fc
@@ -100,6 +103,7 @@ and interp_exp (env : env) (e : exp) : value =
                                                            | Value.Bool false, _              -> v
                                                            | _, Value.Bool false              -> v'
                                                            | Value.Bool true, Value.Bool true -> v
+                                                           (*called on 11*)
                                                            | _,_ -> failwith "(interp_exp)::(BinOp)::(LogicalAnd)-> {v,v'} not matched"
                                                        )
                                    | LogicalOr      -> ( match (v,v') with 
