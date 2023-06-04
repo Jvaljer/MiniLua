@@ -51,7 +51,7 @@ impl<'ast> LEnv<'ast> {
     // fonction, mais aussi compléter les annotations de lifetimes : le choix
     // par défaut fait par le compilateur Rust ne permet pas d'implémenter
     // correctement l'interpréteur.
-    fn lookup<'a>(&'a self, name: &Name) -> Option<&'a RefCell<Value>> where 'a : 'ast {
+    pub fn lookup<'a>(&'a self, name: &Name) -> Option<&'a RefCell<Value>> where 'a : 'ast {
         match self {
             Self::Nil => None,
             Self::Cons(scope, env) =>
