@@ -4,8 +4,6 @@ use self::{
 };
 use crate::parser::ast::*;
 use std::{rc::Rc, collections::HashMap};
-
-use core::cell::RefCell;
 use std::cell::RefCell;
 
 mod env;
@@ -95,10 +93,13 @@ impl Exp_ {
             Self::Number(n) => Value::Number(*n),
             Self::LiteralString(str) => Value::String(str.clone()),
             Self::Var(var) => {
+                /* //for some reason I can't make this work, so I'm gonna do something else
                 if let Some(v) = env.locals.lookup(&var) {
                     return v.borrow().clone();
                 }
                 env.globals.lookup(&var)
+                */ 
+                var.interp_var(env)
             },
             Self::ExpFunctionCall(fc) => fc.interp(env),
             Self::FunctionDef(fb) => {
@@ -209,6 +210,10 @@ impl Var {
                 };
              }
         };
+    }
+
+    fn interp_var<'ast, 'genv>(&'ast self, env: &mut Env<'ast, 'genv>) -> Value<'ast> {
+        
     }
 }
 // Point d'entrée principal de l'interpréteur
