@@ -103,8 +103,8 @@ impl Exp_ {
             },
             Self::ExpFunctionCall(fc) => fc.interp(env),
             Self::FunctionDef(fb) => {
-                let f = Function::new(env, &fb.params, &fb.body);
-                Value::Function(f) 
+                let f = Function::Closure(&fb.0, Rc::clone(&env.locals), &fb.1);
+                Value::Function(f)
             },
             Self::BinOp(bop, e, e_) => {
                 let v = e.interp(env);
@@ -213,7 +213,22 @@ impl Var {
     }
 
     fn interp_var<'ast, 'genv>(&'ast self, env: &mut Env<'ast, 'genv>) -> Value<'ast> {
-        
+        /* //not workign here either... 
+        if let Some(v) = env.locals.lookup(&var) {
+            return v.borrow().clone();
+        }
+        env.globals.lookup(&var) */
+
+        //trying another possibility
+        match self {
+            Var::Name(str) => env.lookup(&str), 
+            Var::IndexTable(table, key) => {
+                match table.interp(env).as_table().borrow().get(&key.interp(env).as_table_key()) {
+                    Some(var) => var.clone(),
+                    None => Value::Nil
+                }
+            }
+        }
     }
 }
 // Point d'entrée principal de l'interpréteur
