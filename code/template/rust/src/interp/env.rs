@@ -51,15 +51,15 @@ impl<'ast> LEnv<'ast> {
     // fonction, mais aussi compléter les annotations de lifetimes : le choix
     // par défaut fait par le compilateur Rust ne permet pas d'implémenter
     // correctement l'interpréteur.
-    pub fn lookup<'a>(&'a self, name: &Name) -> Option<&'a RefCell<Value>> where 'a : 'ast {
+    fn lookup(&self, name: &Name) -> Option<&RefCell<Value<'ast>>> {
         match self {
             Self::Nil => None,
-            Self::Cons(scope, env) =>
-                if let Some(val) = scope.get(name) {
-                    Some(val)
-                } else {
-                    env.lookup(name)
+            Self::Cons(scope, lenv) => { 
+                match scope.get(name) {
+                    Some(v) => Some(v),
+                    None => lenv.lookup(name),
                 }
+            }
         }
     }
 
@@ -72,18 +72,16 @@ impl<'ast> LEnv<'ast> {
     // fonction, mais aussi compléter les annotations de lifetimes : le choix
     // par défaut fait par le compilateur Rust ne permet pas d'implémenter
     // correctement l'interpréteur.
-    pub fn extend<V>(self: &Rc<Self>, names: &'ast [Name], values: V) -> Rc<Self> where V: Iterator<Item = Value<'ast>> {
+    pub fn extend<V>(self: &Rc<Self>, names: &'ast [Name], values: V) -> Rc<LEnv<'ast>> where V: Iterator<Item = Value<'ast>> {
         let mut scope = Scope::new();
         let mut val_iter = values;
-
-        for(i, s) in names.iter().enumerate() {
+        for(_,name) in names.iter().enumerate(){
             if let Some(val) = val_iter.next() {
-                scope.insert(s, RefCell::new(val));
+                scope.insert(name, val.into());
             } else {
-                scope.insert(s, RefCell::new(Value::Nil));
+                scope.insert(name, Value::Nil.into());
             }
         }
-
         Rc::new(LEnv::Cons(scope, self.clone()))
     }
 }
@@ -91,12 +89,12 @@ impl<'ast> LEnv<'ast> {
 impl<'ast, 'genv> Env<'ast, 'genv> {
     // Recherche d'une valeur dans un environnement. Il faut d'abord chercher
     // dans l'environnement local, puis dans l'environnement global.
-    pub fn lookup<'a>(&'a self, name: &Name) -> Value where 'a : 'ast {
-        if let Some(val) = self.locals.lookup(name) {
-            val.borrow().to_owned()
+    pub fn lookup(&self, name: &Name) -> Value<'ast> {
+        if let Some(v) = self.locals.lookup(name) {
+            v.borrow().to_owned()
         } else {
             match self.globals.0.get(name) {
-                Some(val_) => val_.clone(),
+                Some(v_) => v_.clone(),
                 None => Value::Nil,
             }
         }
@@ -106,9 +104,9 @@ impl<'ast, 'genv> Env<'ast, 'genv> {
     // présente dans un environnement local, alors il faut modifier la portée
     // correspondante. Sinon, il faut modifier l'environnement global, soit en
     // modifiant une entrée déjà existante, soit en en créant une nouvelle.
-    pub fn set<'a>(&'a mut self, name: &'ast Name, v: Value<'ast>) where 'a : 'ast {
-        if let Some(cell) = self.locals.lookup(name) {
-            *cell.borrow_mut() = v;
+    pub fn set(&mut self, name: &'ast Name, v: Value<'ast>) {
+        if let Some(c) = self.locals.lookup(name) {
+            *c.borrow_mut() = v;
         } else {
             self.globals.0.insert(name, v);
         }

@@ -1,50 +1,57 @@
 use self::{
     env::{Env, GEnv, LEnv},
-    value::{Value, Function},
+    value::{Function, Value},
 };
 use crate::parser::ast::*;
-use std::{rc::Rc, collections::HashMap};
-use std::cell::RefCell;
+use std::{cell::RefCell, collections::HashMap, rc::Rc, borrow::BorrowMut};
 
 mod env;
 pub mod value;
 
 impl Block {
     // Interprétation d'un bloc
-    fn interp<'ast, 'genv>(&'ast self, env: &'ast mut Env<'ast, 'genv>) -> Value<'ast> {
+    fn interp<'ast, 'genv>(&'ast self, env: &mut Env<'ast, 'genv>) -> Value<'ast> {
         let v = vec![Value::Nil; self.locals.len()];
-        let env_ = Rc::new(Env {
-            locals: env.locals.clone().extend(&self.locals, v.into_iter()),
-            globals: env.globals,
-        });
-
-        let mut tmp = env_.clone();
-        let mut env_m = Rc::get_mut(&mut tmp).unwrap();
-
+        let mut env_m = Env {
+            locals: env.locals.extend(&self.locals, v.into_iter()),
+            globals: &mut env.globals,
+        };
         self.body.interp(&mut env_m);
         self.ret.interp(&mut env_m)
     }
 }
 
-use std::borrow::BorrowMut;
 impl Stat_ {
     // Interprétation d'une instruction
-    fn interp<'ast, 'genv>(&'ast self, env: &'ast mut Env<'ast, 'genv>) -> () where 'genv : 'ast {
+    fn interp<'ast, 'genv>(&'ast self, env: &mut Env<'ast, 'genv>) -> () {
         match self {
             Self::Nop => (),
             Self::Seq(e, e_) => {
                 e.interp(env);
                 e_.interp(env)
             }
-            Self::StatFunctionCall(fc) => {
-                fc.interp(env);
+            Self::StatFunctionCall(fcall) => {
+                fcall.interp(env);
             }
-            Self::Assign(var, exp) => {
-                var.ass_var(env, exp);
+            Self::Assign(var, e) => {
+                //v.assing(e, env);
+                match var {
+                    Var::Name(name) => {
+                        let val = e.interp(env);
+                        env.set(name, val)
+                    } 
+                    Var::IndexTable(tab, k) => {
+                        let table = tab.interp(env).as_table();
+                        let key = k.interp(env).as_table_key();
+                        let val = e.interp(env);
+                        let table_ = &*table;
+                        table_.borrow_mut().insert(key, val);
+                    }
+                };
             }
-            Self::WhileDoEnd(cond, exp) => {
+            Self::WhileDoEnd(cond, e) => {
                 while cond.interp(env).as_bool() {
-                    exp.interp(env);
+                    e.interp(env);
                 }
             }
             Self::If(cond, e, e_) => {
@@ -63,23 +70,28 @@ impl FunctionCall {
     fn interp<'ast, 'genv>(&'ast self, env: &mut Env<'ast, 'genv>) -> Value<'ast> {
         let f = self.0.interp(env).as_function();
         match f {
-            Function::Print => self.interp_print(env),
-            Function::Closure(names, lenv, b) => self.interp_clos(names, lenv, b, env),
+            Function::Print => {
+                self.interp_print(env)
+            },
+            Function::Closure(names, lenv, blk) => {
+                //wanted to make a function 'interp_clos' but couldn't solve how to pass the 'lenv' arg...
+                let args = self.1.iter().map(|e| e.interp(env));
+                let mut env_m = Env {
+                    locals: lenv.extend(names, args.into_iter()),
+                    globals: &mut env.globals,
+                };
+                blk.interp(&mut env_m)
+            }
         }
     }
 
-    fn interp_print<'ast, 'genv>(&'ast self, env:&mut Env<'ast, 'genv>) -> Value<'ast> {
-        let l = self.1.len();
-        for i in 0..l {
+    fn interp_print<'ast, 'genv>(&'ast self, env: &mut Env<'ast, 'genv>) -> Value<'ast>{
+        let len = self.1.len();
+        for i in 0..len-1 {
             print!("{}\t", self.1[i].interp(env));
         }
+        println!("{}", self.1[len-1].interp(env));
         Value::Nil
-    }
-
-    fn interp_clos<'ast, 'genv>(&'ast self, names: &[Name], lenv: &[Value<'ast>], b: &Block, env: &mut Env<'ast, 'genv>) -> Value<'ast> {
-        let args = self.1.iter().map(|e| e.interp(env));
-        let mut env_m = Env { locals: lenv.extend(names, args.into_iter()), globals: &mut env.globals };
-        b.interp(&mut env_m)
     }
 }
 
@@ -87,108 +99,122 @@ impl Exp_ {
     // Interprétation d'une expression
     fn interp<'ast, 'genv>(&'ast self, env: &mut Env<'ast, 'genv>) -> Value<'ast> {
         match self {
-            Self::Nil => Value::Nil,
-            Self::False => Value::Bool(false),
-            Self::True => Value::Bool(true),
-            Self::Number(n) => Value::Number(*n),
-            Self::LiteralString(str) => Value::String(str.clone()),
-            Self::Var(var) => {
-                /* //for some reason I can't make this work, so I'm gonna do something else
-                if let Some(v) = env.locals.lookup(&var) {
-                    return v.borrow().clone();
-                }
-                env.globals.lookup(&var)
-                */ 
-                var.interp_var(env)
+            Self::Nil => {
+                Value::Nil
             },
-            Self::ExpFunctionCall(fc) => fc.interp(env),
+            Self::False => {
+                Value::Bool(false)
+            },
+            Self::True => {
+                Value::Bool(true)
+            },
+            Self::Number(n) => {
+                Value::Number(*n)
+            },
+            Self::LiteralString(s) => {
+                Value::String(s.clone())
+            },
+            Self::Var(var) => {
+                //v.interp_var(env)
+                match var{ 
+                    Var::Name(name) => {
+                        env.lookup(name)
+                    },
+                    Var::IndexTable(tab, k) => {
+                        let table = tab.interp(env).as_table();
+                        let key = k.interp(env).as_table_key();
+                        return match table.borrow().get(&key) {
+                            Some(val) => val.clone(),
+                            None => Value::Nil,
+                        };
+                    }
+                }
+            },
+            Self::ExpFunctionCall(fcal) => {
+                fcal.interp(env)
+            },
             Self::FunctionDef(fb) => {
-                let f = Function::Closure(&fb.0, Rc::clone(&env.locals), &fb.1);
-                Value::Function(f)
+                let env_ = env.locals.clone();
+                let f_val = Function::Closure(&fb.0, env_, &fb.1);
+                Value::Function(f_val)
             },
             Self::BinOp(bop, e, e_) => {
-                let v = e.interp(env);
-                let v_ = e_.interp(env);
                 match bop {
-                    BinOp::Addition => Value::add(v, v_),
-                    BinOp::Subtraction => Value::sub(v, v_),
-                    BinOp::Multiplication => Value::mul(v, v_),
-                    BinOp::Equality => Value::Bool(v == v_),
-                    BinOp::Inequality => Value::Bool(v != v_),
-                    BinOp::Less => Value::Bool(v.lt(v_)),
-                    BinOp::LessEq => Value::Bool(v.le(v_)),
-                    BinOp::Greater => Value::Bool(!v.le(v_)),
-                    BinOp::GreaterEq => Value::Bool(!v.lt(v_)),
-                    BinOp::LogicalAnd => Value::Bool(v.as_bool() && v_.as_bool()),
-                    BinOp::LogicalOr => Value::Bool(v.as_bool() || v_.as_bool()),
+                    // logical operators
+                    BinOp::LogicalAnd => {
+                        let v_and = e.interp(env);
+                        return match v_and {
+                            Value::Bool(false) => v_and,
+                            Value::Nil => v_and,
+                            _ => e_.interp(env),
+                        };
+                    }
+                    BinOp::LogicalOr => {
+                        let v_or = e.interp(env);
+                        return match v_or {
+                            Value::Bool(false) => e_.interp(env),
+                            Value::Nil => e_.interp(env),
+                            _ => v_or,
+                        };
+                    }
+                    _ => {
+                        let v = e.interp(env);
+                        let v_ = e_.interp(env);
+                        match bop {
+                        // arithmetic operators
+                            BinOp::Addition => {
+                                Value::add(v,v_)
+                            },
+                            BinOp::Subtraction => {
+                                Value::sub(v,v_)
+                            },
+                            BinOp::Multiplication => {
+                                Value::mul(v,v_)
+                            },
+                            // relational operators
+                            BinOp::Equality => {
+                                Value::Bool(v == v_)
+                            },
+                            BinOp::Inequality => {
+                                Value::Bool(v != v_)
+                            },
+                            BinOp::Less => {
+                                Value::Bool(v.lt(v_))
+                            },
+                            BinOp::LessEq => {
+                                Value::Bool(v.le(v_))
+                            },
+                            BinOp::Greater => {
+                                Value::Bool(!v.le(v_))
+                            },
+                            BinOp::GreaterEq => {
+                                Value::Bool(!v.lt(v_))
+                            },
+                            _ => panic!("couldn't find the logical operand..."),
+                        }
+                    },
                 }
             },
-            Self::UnOp(uop, e) => match uop {
-                                      UnOp::UnaryMinus => {
-                                        match e.interp(env) {
-                                            Value::Number(n) => Value::Number(-n),
-                                            _ => panic!("UnaryMinus excpects a numeric value"),
-                                        }
-                                      }
-                                      UnOp::Not => {
-                                        match e.interp(env) {
-                                            Value::Bool(b) => Value::Bool(!b),
-                                            _ => panic!("Not excpects a numeric value"),
-                                        }
-                                      }
-                                  },
+            Self::UnOp(uop, e) => {
+                let v = e.interp(env);
+                match uop {
+                    UnOp::UnaryMinus => v.neg(),
+                    UnOp::Not => Value::Bool(!v.as_bool()),
+                }
+            },
             Self::Table(tab) => {
-                let mut t = HashMap::new();
+                let mut table = HashMap::new();
                 for (k, val) in tab {
                     let key = k.interp(env).as_table_key();
                     let value = val.interp(env);
-                    t.insert(key, value);
+                    table.insert(key, value);
                 }
-                Value::Table(Rc::new(RefCell::new(t)))
+                Value::Table(Rc::new(RefCell::new(table)))
             }
         }
     }
 }
 
-//adding something to handle variables
-impl Var {
-    fn ass_var<'ast, 'genv>(&'ast self, env: &'ast mut Env<'ast, 'genv>, e:&'ast Exp_) where 'genv : 'ast {
-        match self {
-            Var::Name(s) => {
-                let v = e.interp(env);
-                env.set(s,v);
-            }
-            Var::IndexTable(tab, k) => {
-                let table = tab.interp(env).as_table();
-                let key = k.interp(env).as_table_key();
-                let val = e.interp(&mut *env);
-
-                if let Some(mut c) = table.borrow().get(&key) {
-                    *c.borrow_mut() = &val;
-                };
-             }
-        };
-    }
-
-    fn interp_var<'ast, 'genv>(&'ast self, env: &mut Env<'ast, 'genv>) -> Value<'ast> {
-        /* //not workign here either... 
-        if let Some(v) = env.locals.lookup(&var) {
-            return v.borrow().clone();
-        }
-        env.globals.lookup(&var) */
-
-        //trying another possibility
-        match self {
-            Var::Name(str) => env.lookup(&str), 
-            Var::IndexTable(table, key) => {
-                match table.interp(env).as_table().borrow().get(&key.interp(env).as_table_key()) {
-                    Some(var) => var.clone(),
-                    None => Value::Nil
-                }
-            }
-        }
-    }
-}
 // Point d'entrée principal de l'interpréteur
 pub fn run(ast: &Block) {
     let mut globals = GEnv(HashMap::new());
