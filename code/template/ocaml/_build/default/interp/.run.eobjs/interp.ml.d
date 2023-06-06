@@ -1,1 +1,1 @@
-interp/interp.ml: Hashtbl List Luaparser Value
+interp/interp.ml: Hashtbl List Luaparser String Value

@@ -3,7 +3,7 @@
 # Shared cache: disabled
 # Workspace root: /home/abel/JvaljerGit/MiniLua/code/template/ocaml
 # Auto-detected concurrency: 4
-$ /home/abel/.opam/prog2/bin/ocamlc.opt -config > /tmp/dune_09bef1_output
+$ /home/abel/.opam/prog2/bin/ocamlc.opt -config > /tmp/dune_32d756_output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -112,3 +112,10 @@ $ /home/abel/.opam/prog2/bin/ocamlc.opt -config > /tmp/dune_09bef1_output
 #      ; windows_unicode = false
 #      }
 #  }
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamldep.opt -modules -impl interp/interp.ml) > _build/default/interp/.run.eobjs/interp.ml.d
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -I interp/.run.eobjs/byte -I interp/.run.eobjs/native -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -I parser/.luaparser.objs/byte -I parser/.luaparser.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o interp/.run.eobjs/native/dune__exe__Interp.cmx -c -impl interp/interp.ml)
+> File "interp/interp.ml", line 92, characters 4-16:
+> 92 | and interp_table (env : env) (l : (exp * exp) list ) : value=
+>          ^^^^^^^^^^^^
+> Warning 32 [unused-value-declaration]: unused value interp_table.
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -o interp/run.exe /home/abel/.opam/prog2/lib/result/result.cmxa /home/abel/.opam/prog2/lib/ppx_deriving/runtime/ppx_deriving_runtime.cmxa parser/luaparser.cmxa interp/.run.eobjs/native/dune__exe.cmx interp/.run.eobjs/native/dune__exe__Value.cmx interp/.run.eobjs/native/dune__exe__Interp.cmx interp/.run.eobjs/native/dune__exe__Run.cmx)
