@@ -110,9 +110,9 @@ impl Exp_ {
                 let v = e.interp(env);
                 let v_ = e_.interp(env);
                 match bop {
-                    BinOp::Addition => Value::add(v.as_number(), v_.as_number()),
-                    BinOp::Subtraction => Value::sub(v.as_number(), v_.as_number()),
-                    BinOp::Multiplication => Value::mul(v.as_number(), v_.as_number()),
+                    BinOp::Addition => Value::add(v, v_),
+                    BinOp::Subtraction => Value::sub(v, v_),
+                    BinOp::Multiplication => Value::mul(v, v_),
                     BinOp::Equality => Value::Bool(v == v_),
                     BinOp::Inequality => Value::Bool(v != v_),
                     BinOp::Less => Value::Bool(v.lt(v_)),
