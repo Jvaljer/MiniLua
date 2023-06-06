@@ -1,0 +1,144 @@
+
+** Conflict (shift/reduce) in state 178.
+** Token involved: LPAREN
+** This state is reached from chunk after reading:
+
+functioncall
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+chunk 
+block EOF 
+(?)
+
+** In state 178, looking ahead at LPAREN, shifting is permitted
+** because of the following sub-derivation:
+
+stat block 
+functioncall 
+functioncall args 
+             . LPAREN RPAREN 
+
+** In state 178, looking ahead at LPAREN, reducing production
+** stat -> functioncall
+** is permitted because of the following sub-derivation:
+
+stat block // lookahead token appears because block can begin with LPAREN
+functioncall . 
+
+** Conflict (shift/reduce) in state 35.
+** Token involved: LPAREN
+** This state is reached from chunk after reading:
+
+varlist EQUAL functioncall
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+chunk 
+block EOF 
+(?)
+
+** In state 35, looking ahead at LPAREN, shifting is permitted
+** because of the following sub-derivation:
+
+stat block 
+varlist EQUAL explist 
+              separated_nonempty_list(COMMA,exp) 
+              exp 
+              exp1 
+              exp2 
+              exp3 
+              exp4 
+              exp5 
+              exp6 
+              exp7 
+              exp8 DOUBLEDOT exp7 
+              exp9 
+              exp10 
+              exp11 
+              base_exp HAT exp11 
+              functioncall 
+              functioncall args 
+                           . LPAREN RPAREN 
+
+** In state 35, looking ahead at LPAREN, reducing production
+** base_exp -> functioncall
+** is permitted because of the following sub-derivation:
+
+stat block // lookahead token appears because block can begin with LPAREN
+varlist EQUAL explist // lookahead token is inherited
+              separated_nonempty_list(COMMA,exp) // lookahead token is inherited
+              exp // lookahead token is inherited
+              exp1 // lookahead token is inherited
+              exp2 // lookahead token is inherited
+              exp3 // lookahead token is inherited
+              exp4 // lookahead token is inherited
+              exp5 // lookahead token is inherited
+              exp6 // lookahead token is inherited
+              exp7 // lookahead token is inherited
+              exp8 // lookahead token is inherited
+              exp9 // lookahead token is inherited
+              exp10 // lookahead token is inherited
+              exp11 // lookahead token is inherited
+              base_exp // lookahead token is inherited
+              functioncall . 
+
+** Conflict (shift/reduce) in state 31.
+** Token involved: LPAREN
+** This state is reached from chunk after reading:
+
+varlist EQUAL pexp
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+chunk 
+block EOF 
+(?)
+
+** In state 31, looking ahead at LPAREN, shifting is permitted
+** because of the following sub-derivation:
+
+stat block 
+varlist EQUAL explist 
+              separated_nonempty_list(COMMA,exp) 
+              exp 
+              exp1 
+              exp2 
+              exp3 
+              exp4 
+              exp5 
+              exp6 
+              exp7 
+              exp8 DOUBLEDOT exp7 
+              exp9 
+              exp10 
+              exp11 
+              base_exp HAT exp11 
+              functioncall 
+              pexp args 
+                   . LPAREN RPAREN 
+
+** In state 31, looking ahead at LPAREN, reducing production
+** base_exp -> pexp
+** is permitted because of the following sub-derivation:
+
+stat block // lookahead token appears because block can begin with LPAREN
+varlist EQUAL explist // lookahead token is inherited
+              separated_nonempty_list(COMMA,exp) // lookahead token is inherited
+              exp // lookahead token is inherited
+              exp1 // lookahead token is inherited
+              exp2 // lookahead token is inherited
+              exp3 // lookahead token is inherited
+              exp4 // lookahead token is inherited
+              exp5 // lookahead token is inherited
+              exp6 // lookahead token is inherited
+              exp7 // lookahead token is inherited
+              exp8 // lookahead token is inherited
+              exp9 // lookahead token is inherited
+              exp10 // lookahead token is inherited
+              exp11 // lookahead token is inherited
+              base_exp // lookahead token is inherited
+              pexp . 

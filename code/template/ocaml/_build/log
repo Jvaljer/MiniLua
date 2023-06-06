@@ -3,7 +3,7 @@
 # Shared cache: disabled
 # Workspace root: /home/abel/JvaljerGit/MiniLua/code/template/ocaml
 # Auto-detected concurrency: 4
-$ /home/abel/.opam/prog2/bin/ocamlc.opt -config > /tmp/dune_2fbe5c_output
+$ /home/abel/.opam/prog2/bin/ocamlc.opt -config > /tmp/dune_a9e1b2_output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -112,3 +112,192 @@ $ /home/abel/.opam/prog2/bin/ocamlc.opt -config > /tmp/dune_2fbe5c_output
 #      ; windows_unicode = false
 #      }
 #  }
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamldep.opt -modules -impl interp/run.ml) > _build/default/interp/.run.eobjs/run.ml.d
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamldep.opt -modules -impl interp-cps/run.ml) > _build/default/interp-cps/.run.eobjs/run.ml.d
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamldep.opt -modules -intf interp/interp.mli) > _build/default/interp/.run.eobjs/interp.mli.d
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamldep.opt -modules -intf interp-cps/interp.mli) > _build/default/interp-cps/.run.eobjs/interp.mli.d
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -bin-annot -I parser/.luaparser.objs/byte -no-alias-deps -opaque -o parser/.luaparser.objs/byte/luaparser.cmo -c -impl parser/luaparser.ml-gen)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamllex -q -o parser/lexer.ml parser/lexer.mll)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/menhir --explain parser/parser.mly --base parser/parser --infer-write-query parser/parser__mock.ml.mock)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamldep.opt -modules -impl interp/interp.ml) > _build/default/interp/.run.eobjs/interp.ml.d
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -I parser/.luaparser.objs/byte -I parser/.luaparser.objs/native -intf-suffix .ml-gen -no-alias-deps -opaque -o parser/.luaparser.objs/native/luaparser.cmx -c -impl parser/luaparser.ml-gen)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamldep.opt -modules -impl interp-cps/interp.ml) > _build/default/interp-cps/.run.eobjs/interp.ml.d
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamldep.opt -modules -intf interp/value.mli) > _build/default/interp/.run.eobjs/value.mli.d
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamldep.opt -modules -intf interp-cps/value.mli) > _build/default/interp-cps/.run.eobjs/value.mli.d
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamldep.opt -modules -impl interp/value.ml) > _build/default/interp/.run.eobjs/value.ml.d
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamldep.opt -modules -impl interp-cps/value.ml) > _build/default/interp-cps/.run.eobjs/value.ml.d
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamldep.opt -modules -intf interp/run.mli) > _build/default/interp/.run.eobjs/run.mli.d
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -bin-annot -I interp/.run.eobjs/byte -no-alias-deps -opaque -o interp/.run.eobjs/byte/dune__exe.cmo -c -impl interp/.run.eobjs/dune__exe.ml-gen)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -bin-annot -I interp-cps/.run.eobjs/byte -no-alias-deps -opaque -o interp-cps/.run.eobjs/byte/dune__exe.cmo -c -impl interp-cps/.run.eobjs/dune__exe.ml-gen)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamldep.opt -modules -intf interp-cps/run.mli) > _build/default/interp-cps/.run.eobjs/run.mli.d
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlc.opt -g -w -24 -I .ppx/0bb5094b13567c3c4e1ee33245b80e63 -I /home/abel/.opam/prog2/lib/ocaml-compiler-libs/common -I /home/abel/.opam/prog2/lib/ocaml-compiler-libs/shadow -I /home/abel/.opam/prog2/lib/ocaml/compiler-libs -I /home/abel/.opam/prog2/lib/ppx_derivers -I /home/abel/.opam/prog2/lib/ppx_deriving/api -I /home/abel/.opam/prog2/lib/ppx_deriving/show -I /home/abel/.opam/prog2/lib/ppxlib -I /home/abel/.opam/prog2/lib/ppxlib/ast -I /home/abel/.opam/prog2/lib/ppxlib/astlib -I /home/abel/.opam/prog2/lib/ppxlib/print_diff -I /home/abel/.opam/prog2/lib/ppxlib/stdppx -I /home/abel/.opam/prog2/lib/ppxlib/traverse_builtins -I /home/abel/.opam/prog2/lib/result -I /home/abel/.opam/prog2/lib/sexplib0 -I /home/abel/.opam/prog2/lib/stdlib-shims -no-alias-deps -o .ppx/0bb5094b13567c3c4e1ee33245b80e63/dune__exe___ppx.cmo -c -impl .ppx/0bb5094b13567c3c4e1ee33245b80e63/_ppx.ml-gen)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -I interp/.run.eobjs/byte -I interp/.run.eobjs/native -intf-suffix .ml-gen -no-alias-deps -opaque -o interp/.run.eobjs/native/dune__exe.cmx -c -impl interp/.run.eobjs/dune__exe.ml-gen)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -I interp-cps/.run.eobjs/byte -I interp-cps/.run.eobjs/native -intf-suffix .ml-gen -no-alias-deps -opaque -o interp-cps/.run.eobjs/native/dune__exe.cmx -c -impl interp-cps/.run.eobjs/dune__exe.ml-gen)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlopt.opt -g -w -24 -I .ppx/0bb5094b13567c3c4e1ee33245b80e63 -I /home/abel/.opam/prog2/lib/ocaml-compiler-libs/common -I /home/abel/.opam/prog2/lib/ocaml-compiler-libs/shadow -I /home/abel/.opam/prog2/lib/ocaml/compiler-libs -I /home/abel/.opam/prog2/lib/ppx_derivers -I /home/abel/.opam/prog2/lib/ppx_deriving/api -I /home/abel/.opam/prog2/lib/ppx_deriving/show -I /home/abel/.opam/prog2/lib/ppxlib -I /home/abel/.opam/prog2/lib/ppxlib/ast -I /home/abel/.opam/prog2/lib/ppxlib/astlib -I /home/abel/.opam/prog2/lib/ppxlib/print_diff -I /home/abel/.opam/prog2/lib/ppxlib/stdppx -I /home/abel/.opam/prog2/lib/ppxlib/traverse_builtins -I /home/abel/.opam/prog2/lib/result -I /home/abel/.opam/prog2/lib/sexplib0 -I /home/abel/.opam/prog2/lib/stdlib-shims -intf-suffix .ml-gen -no-alias-deps -o .ppx/0bb5094b13567c3c4e1ee33245b80e63/dune__exe___ppx.cmx -c -impl .ppx/0bb5094b13567c3c4e1ee33245b80e63/_ppx.ml-gen)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlopt.opt -g -w -24 -o .ppx/0bb5094b13567c3c4e1ee33245b80e63/ppx.exe /home/abel/.opam/prog2/lib/ocaml/compiler-libs/ocamlcommon.cmxa /home/abel/.opam/prog2/lib/ppx_derivers/ppx_derivers.cmxa /home/abel/.opam/prog2/lib/ocaml-compiler-libs/common/ocaml_common.cmxa /home/abel/.opam/prog2/lib/ppxlib/astlib/astlib.cmxa /home/abel/.opam/prog2/lib/stdlib-shims/stdlib_shims.cmxa /home/abel/.opam/prog2/lib/ppxlib/ast/ppxlib_ast.cmxa /home/abel/.opam/prog2/lib/ocaml-compiler-libs/shadow/ocaml_shadow.cmxa /home/abel/.opam/prog2/lib/ppxlib/print_diff/ppxlib_print_diff.cmxa /home/abel/.opam/prog2/lib/ppxlib/traverse_builtins/ppxlib_traverse_builtins.cmxa /home/abel/.opam/prog2/lib/sexplib0/sexplib0.cmxa /home/abel/.opam/prog2/lib/ppxlib/stdppx/stdppx.cmxa /home/abel/.opam/prog2/lib/ppxlib/ppxlib.cmxa /home/abel/.opam/prog2/lib/result/result.cmxa /home/abel/.opam/prog2/lib/ppx_deriving/api/ppx_deriving_api.cmxa /home/abel/.opam/prog2/lib/ppx_deriving/show/ppx_deriving_show.cmxa .ppx/0bb5094b13567c3c4e1ee33245b80e63/dune__exe___ppx.cmx)
+$ (cd _build/default && .ppx/0bb5094b13567c3c4e1ee33245b80e63/ppx.exe --cookie 'library-name="luaparser"' -o parser/lexer.pp.ml --impl parser/lexer.ml -corrected-suffix .ppx-corrected -diff-cmd - -dump-ast)
+$ (cd _build/default && .ppx/0bb5094b13567c3c4e1ee33245b80e63/ppx.exe --cookie 'library-name="luaparser"' -o parser/ast.pp.ml --impl parser/ast.ml -corrected-suffix .ppx-corrected -diff-cmd - -dump-ast)
+$ (cd _build/default && .ppx/0bb5094b13567c3c4e1ee33245b80e63/ppx.exe --cookie 'library-name="luaparser"' -o parser/internalast.pp.ml --impl parser/internalast.ml -corrected-suffix .ppx-corrected -diff-cmd - -dump-ast)
+$ (cd _build/default && .ppx/0bb5094b13567c3c4e1ee33245b80e63/ppx.exe --cookie 'library-name="luaparser"' -o parser/lexer.pp.mli --intf parser/lexer.mli -corrected-suffix .ppx-corrected -diff-cmd - -dump-ast)
+$ (cd _build/default && .ppx/0bb5094b13567c3c4e1ee33245b80e63/ppx.exe --cookie 'library-name="luaparser"' -o parser/parse.pp.ml --impl parser/parse.ml -corrected-suffix .ppx-corrected -diff-cmd - -dump-ast)
+$ (cd _build/default && .ppx/0bb5094b13567c3c4e1ee33245b80e63/ppx.exe --cookie 'library-name="luaparser"' -o parser/parser__mock.ml.pp.mock --impl parser/parser__mock.ml.mock -corrected-suffix .ppx-corrected -diff-cmd - -dump-ast)
+$ (cd _build/default && .ppx/0bb5094b13567c3c4e1ee33245b80e63/ppx.exe --cookie 'library-name="luaparser"' -o parser/parse.pp.mli --intf parser/parse.mli -corrected-suffix .ppx-corrected -diff-cmd - -dump-ast)
+$ (cd _build/default && .ppx/0bb5094b13567c3c4e1ee33245b80e63/ppx.exe --cookie 'library-name="luaparser"' -o parser/simplify.pp.ml --impl parser/simplify.ml -corrected-suffix .ppx-corrected -diff-cmd - -dump-ast)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamldep.opt -modules -impl parser/lexer.pp.ml) > _build/default/parser/.luaparser.objs/lexer.pp.ml.d
+$ (cd _build/default && .ppx/0bb5094b13567c3c4e1ee33245b80e63/ppx.exe --cookie 'library-name="luaparser"' -o parser/simplify.pp.mli --intf parser/simplify.mli -corrected-suffix .ppx-corrected -diff-cmd - -dump-ast)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamldep.opt -modules -impl parser/ast.pp.ml) > _build/default/parser/.luaparser.objs/ast.pp.ml.d
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamldep.opt -modules -intf parser/lexer.pp.mli) > _build/default/parser/.luaparser.objs/lexer.pp.mli.d
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamldep.opt -modules -impl parser/parse.pp.ml) > _build/default/parser/.luaparser.objs/parse.pp.ml.d
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamldep.opt -modules -impl parser/internalast.pp.ml) > _build/default/parser/.luaparser.objs/internalast.pp.ml.d
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamldep.opt -modules -impl parser/parser__mock.ml.pp.mock) > _build/default/parser/.luaparser.objs/parser__mock.ml.pp.mock.d
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamldep.opt -modules -intf parser/parse.pp.mli) > _build/default/parser/.luaparser.objs/parse.pp.mli.d
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamldep.opt -modules -impl parser/simplify.pp.ml) > _build/default/parser/.luaparser.objs/simplify.pp.ml.d
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamldep.opt -modules -intf parser/simplify.pp.mli) > _build/default/parser/.luaparser.objs/simplify.pp.mli.d
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -I parser/.luaparser.objs/byte -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -no-alias-deps -opaque -open Luaparser -o parser/.luaparser.objs/byte/luaparser__Ast.cmo -c -impl parser/ast.pp.ml)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -I parser/.luaparser.objs/byte -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -no-alias-deps -opaque -open Luaparser -o parser/.luaparser.objs/byte/luaparser__Parse.cmi -c -intf parser/parse.pp.mli)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -I parser/.luaparser.objs/byte -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -no-alias-deps -opaque -open Luaparser -o parser/.luaparser.objs/byte/luaparser__Internalast.cmo -c -impl parser/internalast.pp.ml)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -I parser/.luaparser.objs/byte -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -no-alias-deps -opaque -open Luaparser -o parser/.luaparser.objs/byte/luaparser__Simplify.cmi -c -intf parser/simplify.pp.mli)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -I parser/.luaparser.objs/byte -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -intf-suffix .ml -no-alias-deps -opaque -open Luaparser -o parser/.luaparser.objs/byte/luaparser__Simplify.cmo -c -impl parser/simplify.pp.ml)
+$ (cd _build/.sandbox/93eb19215fe8b45846c63616ef4e928a/default && /home/abel/.opam/prog2/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I parser/.luaparser.objs/byte -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -open Luaparser -short-paths -i -impl parser/parser__mock.ml.pp.mock) > _build/.sandbox/93eb19215fe8b45846c63616ef4e928a/default/parser/parser__mock.mli.inferred
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I parser/.luaparser.objs/byte -I parser/.luaparser.objs/native -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -intf-suffix .ml -no-alias-deps -opaque -open Luaparser -o parser/.luaparser.objs/native/luaparser__Ast.cmx -c -impl parser/ast.pp.ml)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I parser/.luaparser.objs/byte -I parser/.luaparser.objs/native -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -intf-suffix .ml -no-alias-deps -opaque -open Luaparser -o parser/.luaparser.objs/native/luaparser__Simplify.cmx -c -impl parser/simplify.pp.ml)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I parser/.luaparser.objs/byte -I parser/.luaparser.objs/native -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -intf-suffix .ml -no-alias-deps -opaque -open Luaparser -o parser/.luaparser.objs/native/luaparser__Internalast.cmx -c -impl parser/internalast.pp.ml)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/menhir --explain parser/parser.mly --base parser/parser --infer-read-reply parser/parser__mock.mli.inferred)
+> Warning: 3 states have shift/reduce conflicts.
+> Warning: 3 shift/reduce conflicts were arbitrarily resolved.
+$ (cd _build/default && .ppx/0bb5094b13567c3c4e1ee33245b80e63/ppx.exe --cookie 'library-name="luaparser"' -o parser/parser.pp.mli --intf parser/parser.mli -corrected-suffix .ppx-corrected -diff-cmd - -dump-ast)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamldep.opt -modules -intf parser/parser.pp.mli) > _build/default/parser/.luaparser.objs/parser.pp.mli.d
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -I parser/.luaparser.objs/byte -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -no-alias-deps -opaque -open Luaparser -o parser/.luaparser.objs/byte/luaparser__Parser.cmi -c -intf parser/parser.pp.mli)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -I parser/.luaparser.objs/byte -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -no-alias-deps -opaque -open Luaparser -o parser/.luaparser.objs/byte/luaparser__Lexer.cmi -c -intf parser/lexer.pp.mli)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -I parser/.luaparser.objs/byte -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -intf-suffix .ml -no-alias-deps -opaque -open Luaparser -o parser/.luaparser.objs/byte/luaparser__Parse.cmo -c -impl parser/parse.pp.ml)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -I parser/.luaparser.objs/byte -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -intf-suffix .ml -no-alias-deps -opaque -open Luaparser -o parser/.luaparser.objs/byte/luaparser__Lexer.cmo -c -impl parser/lexer.pp.ml)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I parser/.luaparser.objs/byte -I parser/.luaparser.objs/native -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -intf-suffix .ml -no-alias-deps -opaque -open Luaparser -o parser/.luaparser.objs/native/luaparser__Parse.cmx -c -impl parser/parse.pp.ml)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -I showast/.showast.eobjs/byte -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -I parser/.luaparser.objs/byte -no-alias-deps -opaque -o showast/.showast.eobjs/byte/dune__exe__Showast.cmi -c -intf showast/showast.mli)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I parser/.luaparser.objs/byte -I parser/.luaparser.objs/native -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -intf-suffix .ml -no-alias-deps -opaque -open Luaparser -o parser/.luaparser.objs/native/luaparser__Lexer.cmx -c -impl parser/lexer.pp.ml)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -bin-annot -I interp/.run.eobjs/byte -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -I parser/.luaparser.objs/byte -no-alias-deps -opaque -open Dune__exe -o interp/.run.eobjs/byte/dune__exe__Interp.cmi -c -intf interp/interp.mli)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -bin-annot -I interp-cps/.run.eobjs/byte -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -I parser/.luaparser.objs/byte -no-alias-deps -opaque -open Dune__exe -o interp-cps/.run.eobjs/byte/dune__exe__Interp.cmi -c -intf interp-cps/interp.mli)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -bin-annot -I interp/.run.eobjs/byte -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -I parser/.luaparser.objs/byte -no-alias-deps -opaque -open Dune__exe -o interp/.run.eobjs/byte/dune__exe__Value.cmi -c -intf interp/value.mli)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -bin-annot -I interp-cps/.run.eobjs/byte -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -I parser/.luaparser.objs/byte -no-alias-deps -opaque -open Dune__exe -o interp-cps/.run.eobjs/byte/dune__exe__Run.cmi -c -intf interp-cps/run.mli)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -bin-annot -I interp/.run.eobjs/byte -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -I parser/.luaparser.objs/byte -no-alias-deps -opaque -open Dune__exe -o interp/.run.eobjs/byte/dune__exe__Run.cmi -c -intf interp/run.mli)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -bin-annot -I interp-cps/.run.eobjs/byte -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -I parser/.luaparser.objs/byte -no-alias-deps -opaque -open Dune__exe -o interp-cps/.run.eobjs/byte/dune__exe__Value.cmi -c -intf interp-cps/value.mli)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I showast/.showast.eobjs/byte -I showast/.showast.eobjs/native -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -I parser/.luaparser.objs/byte -I parser/.luaparser.objs/native -intf-suffix .ml -no-alias-deps -opaque -o showast/.showast.eobjs/native/dune__exe__Showast.cmx -c -impl showast/showast.ml)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -I interp/.run.eobjs/byte -I interp/.run.eobjs/native -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -I parser/.luaparser.objs/byte -I parser/.luaparser.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o interp/.run.eobjs/native/dune__exe__Interp.cmx -c -impl interp/interp.ml)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -I interp/.run.eobjs/byte -I interp/.run.eobjs/native -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -I parser/.luaparser.objs/byte -I parser/.luaparser.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o interp/.run.eobjs/native/dune__exe__Value.cmx -c -impl interp/value.ml)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -I interp/.run.eobjs/byte -I interp/.run.eobjs/native -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -I parser/.luaparser.objs/byte -I parser/.luaparser.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o interp/.run.eobjs/native/dune__exe__Run.cmx -c -impl interp/run.ml)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -I interp-cps/.run.eobjs/byte -I interp-cps/.run.eobjs/native -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -I parser/.luaparser.objs/byte -I parser/.luaparser.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o interp-cps/.run.eobjs/native/dune__exe__Run.cmx -c -impl interp-cps/run.ml)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -I interp-cps/.run.eobjs/byte -I interp-cps/.run.eobjs/native -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -I parser/.luaparser.objs/byte -I parser/.luaparser.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o interp-cps/.run.eobjs/native/dune__exe__Interp.cmx -c -impl interp-cps/interp.ml)
+> File "interp-cps/interp.ml", line 7, characters 8-20:
+> 7 | let rec interp_block (env : env) (blk : block) (k : value -> unit) (crtn : coroutine): unit =
+>             ^^^^^^^^^^^^
+> Warning 39 [unused-rec-flag]: unused rec flag.
+> File "interp-cps/interp.ml", line 7, characters 8-20:
+> 7 | let rec interp_block (env : env) (blk : block) (k : value -> unit) (crtn : coroutine): unit =
+>             ^^^^^^^^^^^^
+> Warning 32 [unused-value-declaration]: unused value interp_block.
+> File "interp-cps/interp.ml", line 10, characters 4-16:
+> 10 | and create_scope (names: string list) (values: value list) : (name, value) Hashtbl.t = 
+>          ^^^^^^^^^^^^
+> Warning 32 [unused-value-declaration]: unused value create_scope.
+> File "interp-cps/interp.ml", line 13, characters 4-15:
+> 13 | and interp_stat (env : env) (stat : stat) (k : unit -> unit) (crtn : coroutine): unit =
+>          ^^^^^^^^^^^
+> Warning 32 [unused-value-declaration]: unused value interp_stat.
+> File "interp-cps/interp.ml", line 16, characters 4-18:
+> 16 | and interp_funcall (env : env) (fc : functioncall) (k: value -> unit) (crtn : coroutine): unit =
+>          ^^^^^^^^^^^^^^
+> Warning 32 [unused-value-declaration]: unused value interp_funcall.
+> File "interp-cps/interp.ml", line 19, characters 4-14:
+> 19 | and interp_exp (env : env) (e : exp) (k: value -> unit) (crtn : coroutine): unit =
+>          ^^^^^^^^^^
+> Warning 32 [unused-value-declaration]: unused value interp_exp.
+> File "interp-cps/interp.ml", line 7, characters 22-25:
+> 7 | let rec interp_block (env : env) (blk : block) (k : value -> unit) (crtn : coroutine): unit =
+>                           ^^^
+> Warning 27 [unused-var-strict]: unused variable env.
+> File "interp-cps/interp.ml", line 7, characters 34-37:
+> 7 | let rec interp_block (env : env) (blk : block) (k : value -> unit) (crtn : coroutine): unit =
+>                                       ^^^
+> Warning 27 [unused-var-strict]: unused variable blk.
+> File "interp-cps/interp.ml", line 7, characters 48-49:
+> 7 | let rec interp_block (env : env) (blk : block) (k : value -> unit) (crtn : coroutine): unit =
+>                                                     ^
+> Warning 27 [unused-var-strict]: unused variable k.
+> File "interp-cps/interp.ml", line 7, characters 68-72:
+> 7 | let rec interp_block (env : env) (blk : block) (k : value -> unit) (crtn : coroutine): unit =
+>                                                                         ^^^^
+> Warning 27 [unused-var-strict]: unused variable crtn.
+> File "interp-cps/interp.ml", line 10, characters 18-23:
+> 10 | and create_scope (names: string list) (values: value list) : (name, value) Hashtbl.t = 
+>                        ^^^^^
+> Warning 27 [unused-var-strict]: unused variable names.
+> File "interp-cps/interp.ml", line 10, characters 39-45:
+> 10 | and create_scope (names: string list) (values: value list) : (name, value) Hashtbl.t = 
+>                                             ^^^^^^
+> Warning 27 [unused-var-strict]: unused variable values.
+> File "interp-cps/interp.ml", line 13, characters 17-20:
+> 13 | and interp_stat (env : env) (stat : stat) (k : unit -> unit) (crtn : coroutine): unit =
+>                       ^^^
+> Warning 27 [unused-var-strict]: unused variable env.
+> File "interp-cps/interp.ml", line 13, characters 29-33:
+> 13 | and interp_stat (env : env) (stat : stat) (k : unit -> unit) (crtn : coroutine): unit =
+>                                   ^^^^
+> Warning 27 [unused-var-strict]: unused variable stat.
+> File "interp-cps/interp.ml", line 13, characters 43-44:
+> 13 | and interp_stat (env : env) (stat : stat) (k : unit -> unit) (crtn : coroutine): unit =
+>                                                 ^
+> Warning 27 [unused-var-strict]: unused variable k.
+> File "interp-cps/interp.ml", line 13, characters 62-66:
+> 13 | and interp_stat (env : env) (stat : stat) (k : unit -> unit) (crtn : coroutine): unit =
+>                                                                    ^^^^
+> Warning 27 [unused-var-strict]: unused variable crtn.
+> File "interp-cps/interp.ml", line 16, characters 20-23:
+> 16 | and interp_funcall (env : env) (fc : functioncall) (k: value -> unit) (crtn : coroutine): unit =
+>                          ^^^
+> Warning 27 [unused-var-strict]: unused variable env.
+> File "interp-cps/interp.ml", line 16, characters 32-34:
+> 16 | and interp_funcall (env : env) (fc : functioncall) (k: value -> unit) (crtn : coroutine): unit =
+>                                      ^^
+> Warning 27 [unused-var-strict]: unused variable fc.
+> File "interp-cps/interp.ml", line 16, characters 52-53:
+> 16 | and interp_funcall (env : env) (fc : functioncall) (k: value -> unit) (crtn : coroutine): unit =
+>                                                          ^
+> Warning 27 [unused-var-strict]: unused variable k.
+> File "interp-cps/interp.ml", line 16, characters 71-75:
+> 16 | and interp_funcall (env : env) (fc : functioncall) (k: value -> unit) (crtn : coroutine): unit =
+>                                                                             ^^^^
+> Warning 27 [unused-var-strict]: unused variable crtn.
+> File "interp-cps/interp.ml", line 19, characters 16-19:
+> 19 | and interp_exp (env : env) (e : exp) (k: value -> unit) (crtn : coroutine): unit =
+>                      ^^^
+> Warning 27 [unused-var-strict]: unused variable env.
+> File "interp-cps/interp.ml", line 19, characters 28-29:
+> 19 | and interp_exp (env : env) (e : exp) (k: value -> unit) (crtn : coroutine): unit =
+>                                  ^
+> Warning 27 [unused-var-strict]: unused variable e.
+> File "interp-cps/interp.ml", line 19, characters 38-39:
+> 19 | and interp_exp (env : env) (e : exp) (k: value -> unit) (crtn : coroutine): unit =
+>                                            ^
+> Warning 27 [unused-var-strict]: unused variable k.
+> File "interp-cps/interp.ml", line 19, characters 57-61:
+> 19 | and interp_exp (env : env) (e : exp) (k: value -> unit) (crtn : coroutine): unit =
+>                                                               ^^^^
+> Warning 27 [unused-var-strict]: unused variable crtn.
+> File "interp-cps/interp.ml", line 22, characters 8-11:
+> 22 | let run ast =
+>              ^^^
+> Warning 27 [unused-var-strict]: unused variable ast.
+> File "interp-cps/interp.ml", line 31, characters 6-9:
+> 31 |   let env = Value.{ globals; locals = [] } in
+>            ^^^
+> Warning 26 [unused-var]: unused variable env.
+$ (cd _build/default && .ppx/0bb5094b13567c3c4e1ee33245b80e63/ppx.exe --cookie 'library-name="luaparser"' -o parser/parser.pp.ml --impl parser/parser.ml -corrected-suffix .ppx-corrected -diff-cmd - -dump-ast)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -I interp-cps/.run.eobjs/byte -I interp-cps/.run.eobjs/native -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -I parser/.luaparser.objs/byte -I parser/.luaparser.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o interp-cps/.run.eobjs/native/dune__exe__Value.cmx -c -impl interp-cps/value.ml)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamldep.opt -modules -impl parser/parser.pp.ml) > _build/default/parser/.luaparser.objs/parser.pp.ml.d
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -I parser/.luaparser.objs/byte -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -intf-suffix .ml -no-alias-deps -opaque -open Luaparser -o parser/.luaparser.objs/byte/luaparser__Parser.cmo -c -impl parser/parser.pp.ml)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -a -o parser/luaparser.cma parser/.luaparser.objs/byte/luaparser.cmo parser/.luaparser.objs/byte/luaparser__Ast.cmo parser/.luaparser.objs/byte/luaparser__Internalast.cmo parser/.luaparser.objs/byte/luaparser__Simplify.cmo parser/.luaparser.objs/byte/luaparser__Parser.cmo parser/.luaparser.objs/byte/luaparser__Lexer.cmo parser/.luaparser.objs/byte/luaparser__Parse.cmo)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I parser/.luaparser.objs/byte -I parser/.luaparser.objs/native -I /home/abel/.opam/prog2/lib/ppx_deriving/runtime -I /home/abel/.opam/prog2/lib/result -intf-suffix .ml -no-alias-deps -opaque -open Luaparser -o parser/.luaparser.objs/native/luaparser__Parser.cmx -c -impl parser/parser.pp.ml)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -a -o parser/luaparser.cmxa parser/.luaparser.objs/native/luaparser.cmx parser/.luaparser.objs/native/luaparser__Ast.cmx parser/.luaparser.objs/native/luaparser__Internalast.cmx parser/.luaparser.objs/native/luaparser__Simplify.cmx parser/.luaparser.objs/native/luaparser__Parser.cmx parser/.luaparser.objs/native/luaparser__Lexer.cmx parser/.luaparser.objs/native/luaparser__Parse.cmx)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -shared -linkall -I parser -o parser/luaparser.cmxs parser/luaparser.cmxa)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -o showast/showast.exe /home/abel/.opam/prog2/lib/result/result.cmxa /home/abel/.opam/prog2/lib/ppx_deriving/runtime/ppx_deriving_runtime.cmxa parser/luaparser.cmxa showast/.showast.eobjs/native/dune__exe__Showast.cmx)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -o interp-cps/run.exe /home/abel/.opam/prog2/lib/result/result.cmxa /home/abel/.opam/prog2/lib/ppx_deriving/runtime/ppx_deriving_runtime.cmxa parser/luaparser.cmxa interp-cps/.run.eobjs/native/dune__exe.cmx interp-cps/.run.eobjs/native/dune__exe__Value.cmx interp-cps/.run.eobjs/native/dune__exe__Interp.cmx interp-cps/.run.eobjs/native/dune__exe__Run.cmx)
+$ (cd _build/default && /home/abel/.opam/prog2/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -o interp/run.exe /home/abel/.opam/prog2/lib/result/result.cmxa /home/abel/.opam/prog2/lib/ppx_deriving/runtime/ppx_deriving_runtime.cmxa parser/luaparser.cmxa interp/.run.eobjs/native/dune__exe.cmx interp/.run.eobjs/native/dune__exe__Value.cmx interp/.run.eobjs/native/dune__exe__Interp.cmx interp/.run.eobjs/native/dune__exe__Run.cmx)
