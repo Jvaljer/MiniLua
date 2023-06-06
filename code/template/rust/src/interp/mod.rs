@@ -63,23 +63,23 @@ impl FunctionCall {
     fn interp<'ast, 'genv>(&'ast self, env: &mut Env<'ast, 'genv>) -> Value<'ast> {
         let f = self.0.interp(env).as_function();
         match f {
-            Function::Print => {
-                let len = self.1.len();
-                for i in 0..len - 1 {
-                    print!("{}\t", self.1[i].interp(env));
-                }
-                println!("{}", self.1[len - 1].interp(env));
-                Value::Nil
-            }
-            Function::Closure(names, lenv, b) => {
-                let args = self.1.iter().map(|e| e.interp(env));
-                let mut new_env = Env {
-                    locals: lenv.extend(names, args.into_iter()),
-                    globals: &mut env.globals,
-                };
-                b.interp(&mut new_env)
-            }
+            Function::Print => self.interp_print(env),
+            Function::Closure(names, lenv, b) => self.interp_clos(names, lenv, b, env),
         }
+    }
+
+    fn interp_print<'ast, 'genv>(&'ast self, env:&mut Env<'ast, 'genv>) -> Value<'ast> {
+        let l = self.1.len();
+        for i in 0..l {
+            print!("{}\t", self.1[i].interp(env));
+        }
+        Value::Nil
+    }
+
+    fn interp_clos<'ast, 'genv>(&'ast self, names: &[Name], lenv: &[Value<'ast>], b: &Block, env: &mut Env<'ast, 'genv>) -> Value<'ast> {
+        let args = self.1.iter().map(|e| e.interp(env));
+        let mut env_m = Env { locals: lenv.extend(names, args.into_iter()), globals: &mut env.globals };
+        b.interp(&mut env_m)
     }
 }
 
@@ -110,57 +110,15 @@ impl Exp_ {
                 let v = e.interp(env);
                 let v_ = e_.interp(env);
                 match bop {
-                    //telling me that I must implement PartialOrd for 'Value' but its already done...
-                    /*
-                    BinOp::Addition => match(v,v_){
-                        (Value::Number(n), Value::Number(n_)) => Value::Add(n,n_),
-                        _ => panic!("cannot interpret '{} + {}' because not both numeric values", v,v_),
-                    },
-                    BinOp::Subtraction => match (v,v_){
-                        (Value::Number(n), Value::Number(n_)) => Value::Sub(n,n_),
-                        _ => panic!("cannot interpret '{} - {}' because not both numeric values", v,v_),
-                    },
-                    BinOp::Multiplication => match (v,v_){
-                        (Value::Number(n), Value::Number(n_)) => Value::Mul(n,n_),
-                        _ => panic!("cannot interpret '{} * {}' because not both numeric values", v,v_),
-                    },
+                    BinOp::Addition => Value::add(v.as_number(), v_.as_number()),
+                    BinOp::Subtraction => Value::sub(v.as_number(), v_.as_number()),
+                    BinOp::Multiplication => Value::mul(v.as_number(), v_.as_number()),
                     BinOp::Equality => Value::Bool(v == v_),
                     BinOp::Inequality => Value::Bool(v != v_),
-                    //shall test all these logical stuff
-                    BinOp::Less => match (v,v_){
-                        (Value::Number(n), Value::Number(n_)) => Value::Bool(v < v_),
-                        _ => panic!("cannot interpret '{} < {}' because not both numeric values", v,v_),
-                    },
-                    BinOp::LessEq => match (v,v_){
-                        (Value::Number(n), Value::Number(n_)) => Value::Bool(v <= v_),
-                        _ => panic!("cannot interpret '{} <= {}' because not both numeric values", v,v_),
-                    },
-                    BinOp::Greater => match (v,v_){
-                        (Value::Number(n), Value::Number(n_)) => Value::Bool(v > v_),
-                        _ => panic!("cannot interpret '{} > {}' because not both numeric values", v,v_),
-                    },
-                    BinOp::GreaterEq => match (v,v_){
-                        (Value::Number(n), Value::Number(n_)) => Value::Bool(v >= v_),
-                        _ => panic!("cannot interpret '{} >= {}' because not both numeric values", v,v_),
-                    },
-                    BinOp::LogicalAnd => match (v,v_){
-                        (Value::Bool(b), Value::Bool(b_)) => Value::Bool(b && b_),
-                        _ => panic!("cannot interpret '{} && {}' because not both boolean values", v,v_),
-                    },
-                    BinOp::LogicalOr => match (v,v_){
-                        (Value::Bool(b), Value::Bool(b_)) => Value::Bool(b || b_),
-                        _ => panic!("cannot interpret '{} || {}' because not both boolean values", v,v_),
-                    }, */
-                    //so doing something else
-                    BinOp::Addition => Value::add(v, v_),
-                    BinOp::Subtraction => Value::sub(v, v_),
-                    BinOp::Multiplication => Value::mul(v, v_),
-                    BinOp::Equality => Value::Bool(v == v_),
-                    BinOp::Inequality => Value::Bool(v != v_),
-                    BinOp::Less => Value::Bool(v.as_number() < v_.as_number()),
-                    BinOp::LessEq => Value::Bool(v.as_number() <= v_.as_number()),
-                    BinOp::Greater => Value::Bool(v.as_number() > v_.as_number()),
-                    BinOp::GreaterEq => Value::Bool(v.as_number() >= v_.as_number()),
+                    BinOp::Less => Value::Bool(v.lt(v_)),
+                    BinOp::LessEq => Value::Bool(v.le(v_)),
+                    BinOp::Greater => Value::Bool(!v.le(v_)),
+                    BinOp::GreaterEq => Value::Bool(!v.lt(v_)),
                     BinOp::LogicalAnd => Value::Bool(v.as_bool() && v_.as_bool()),
                     BinOp::LogicalOr => Value::Bool(v.as_bool() || v_.as_bool()),
                 }
